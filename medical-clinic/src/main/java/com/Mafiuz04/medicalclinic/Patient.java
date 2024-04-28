@@ -5,13 +5,13 @@ import java.time.LocalDate;
 public class Patient {
     private String email;
     private String password;
-    private long idCardNo;
+    private String idCardNo;
     private String firstName;
     private String lastName;
     private String phoneNumber;
     private LocalDate birthday;
 
-    public Patient(String email, String password, long idCardNo, String firstName, String lastName, String phoneNumber, LocalDate birthday) {
+    public Patient(String email, String password, String idCardNo, String firstName, String lastName, String phoneNumber, LocalDate birthday) {
         this.email = email;
         this.password = password;
         this.idCardNo = idCardNo;
@@ -37,11 +37,11 @@ public class Patient {
         this.password = password;
     }
 
-    public long getIdCardNo() {
+    public String getIdCardNo() {
         return idCardNo;
     }
 
-    public void setIdCardNo(long idCardNo) {
+    public void setIdCardNo(String idCardNo) {
         this.idCardNo = idCardNo;
     }
 

@@ -1,8 +1,6 @@
 package com.Mafiuz04.medicalclinic;
 
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,43 +8,27 @@ import java.util.List;
 public class PatientService {
     List<Patient> patients = new ArrayList<>();
 
-    public void showAllPatients() {
-        for (Patient patient : patients) {
-            System.out.println(patient);
-        }
+    public List<Patient> getPatients() {
+        List<Patient> copyListOfPatients = patients;
+        return copyListOfPatients;
     }
-
-    public void showPatientByEmail(String email) {
-        patients.stream()
+    public Patient getPatientByEmail(String email) {
+        return patients.stream()
                 .filter(patient -> patient.getEmail().equals(email))
-                .findAny()
-                .ifPresent(System.out::println);
+                .findAny().
+                get();
     }
 
-    public void addPatient(String email, String password, long idCardNo, String firstName, String lastName,
-                           String phoneNumber, LocalDate birthday) {
-        patients.add(new Patient(email, password, idCardNo, firstName, lastName, phoneNumber, birthday));
+    public void addPatient( Patient patient) {
+        patients.add(patient);
     }
 
     public void deletePatientByEmail(String email) {
         patients.removeIf(patient -> patient.getEmail().equals(email));
     }
 
-
-    public void updatePatientByMail(String email, String password, long idCardNo, String firstName, String lastName,
-                                    String phoneNumber, LocalDate birthday, String newEmail) {
-        Patient patient = searchForAPatient(email);
-        patient.setEmail(newEmail);
-        patient.setPassword(password);
-        patient.setIdCardNo(idCardNo);
-        patient.setFirstName(firstName);
-        patient.setLastName(lastName);
-        patient.setPhoneNumber(phoneNumber);
-        patient.setBirthday(birthday);
-    }
-
     public void updatePatientByMail(String email, Patient updatedPatient) {
-        Patient patient = searchForAPatient(email);
+        Patient patient = findByEmail(email);
         patient.setEmail(updatedPatient.getEmail());
         patient.setPassword(updatedPatient.getPassword());
         patient.setIdCardNo(updatedPatient.getIdCardNo());
@@ -56,9 +38,10 @@ public class PatientService {
         patient.setBirthday(updatedPatient.getBirthday());
     }
 
-    private Patient searchForAPatient(String email) {
+    private Patient findByEmail(String email) {
         return patients.stream()
                 .filter(patient -> patient.getEmail().equals(email))
-                .findAny().get();
+                .findAny()
+                .get();
     }
 }
