@@ -1,4 +1,4 @@
-package com.Mafiuz04.medicalclinic;
+package com.Mafiuz04.medicalclinic.model;
 
 import java.time.LocalDate;
 
