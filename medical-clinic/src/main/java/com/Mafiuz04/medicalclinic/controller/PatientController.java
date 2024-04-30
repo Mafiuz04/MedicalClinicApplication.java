@@ -2,6 +2,7 @@ package com.Mafiuz04.medicalclinic.controller;
 
 
 import com.Mafiuz04.medicalclinic.model.Patient;
+import com.Mafiuz04.medicalclinic.service.PasswordService;
 import com.Mafiuz04.medicalclinic.service.PatientService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -12,11 +13,13 @@ import java.util.List;
 @RestController
 public class PatientController {
     private final PatientService patientService;
+    private final PasswordService passwordService;
 
     //    @Autowired -> nie ma potrzeby używania tej adnotacji, gdyż mamy tylko jeden konstruktor, w przypadku wielu kontruktorów,
 //    adnotacja mówi springowi który kontruktor ma użyć
-    public PatientController(PatientService patientService) {
+    public PatientController(PatientService patientService, PasswordService passwordService) {
         this.patientService = patientService;
+        this.passwordService = passwordService;
     }
 
     @GetMapping()
@@ -44,6 +47,11 @@ public class PatientController {
     @PutMapping("/{email}")
     public Patient updatePatient(@PathVariable("email") String email, @RequestBody Patient updatedPatient) {
         return patientService.updatePatientByMail(email, updatedPatient);
+    }
+    @PatchMapping("/{email}")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public Patient updatePassword(@PathVariable("email") String email, @RequestBody Patient updatedPatient) {
+        return passwordService.changePassword(email, updatedPatient.getPassword());
     }
 
 }
