@@ -4,14 +4,14 @@ import java.time.LocalDate;
 
 public class Patient {
     private String email;
-    private Password password;
+    private String password;
     private String idCardNo;
     private String firstName;
     private String lastName;
     private String phoneNumber;
     private LocalDate birthday;
 
-    public Patient(String email, Password password, String idCardNo, String firstName, String lastName, String phoneNumber, LocalDate birthday) {
+    public Patient(String email, String password, String idCardNo, String firstName, String lastName, String phoneNumber, LocalDate birthday) {
         this.email = email;
         this.password = password;
         this.idCardNo = idCardNo;
@@ -29,11 +29,11 @@ public class Patient {
         this.email = email;
     }
 
-    public Password getPassword() {
+    public String getPassword() {
         return password;
     }
 
-    public void setPassword(Password password) {
+    public void setPassword(String password) {
         this.password = password;
     }
 

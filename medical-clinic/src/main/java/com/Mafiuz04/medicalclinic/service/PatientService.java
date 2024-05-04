@@ -39,4 +39,10 @@ public class PatientService {
         return patient;
     }
 
+    public Patient changePatientPassword(String email, String newPassword) {
+        Patient patientByEmail = getPatientByEmail(email);
+        patientRepo.editPassword(patientByEmail, newPassword);
+        return patientByEmail;
+    }
+
 }

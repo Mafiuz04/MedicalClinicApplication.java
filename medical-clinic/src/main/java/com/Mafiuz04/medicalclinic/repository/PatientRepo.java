@@ -42,4 +42,7 @@ public class PatientRepo {
         patient.setIdCardNo(newPatientData.getIdCardNo());
         patient.setPhoneNumber(newPatientData.getPhoneNumber());
     }
+    public void editPassword(Patient patient, String newPassword){
+        patient.setPassword(newPassword);
+    }
 }
