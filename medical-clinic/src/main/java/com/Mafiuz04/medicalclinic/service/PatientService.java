@@ -1,5 +1,6 @@
 package com.Mafiuz04.medicalclinic.service;
 
+import com.Mafiuz04.medicalclinic.model.ChangePassword;
 import com.Mafiuz04.medicalclinic.model.Patient;
 import com.Mafiuz04.medicalclinic.repository.PatientRepo;
 import org.springframework.stereotype.Service;
@@ -39,8 +40,9 @@ public class PatientService {
         return patient;
     }
 
-    public Patient changePatientPassword(String email, String newPassword) {
-        Patient patientByEmail = getPatientByEmail(email);
+    public Patient changePatientPassword(String email, ChangePassword newPassword) {
+        Patient patientByEmail = patientRepo.getPatient(email)
+                .orElseThrow(() -> new NoSuchElementException("There is no patient with given email."));
         patientRepo.editPassword(patientByEmail, newPassword);
         return patientByEmail;
     }

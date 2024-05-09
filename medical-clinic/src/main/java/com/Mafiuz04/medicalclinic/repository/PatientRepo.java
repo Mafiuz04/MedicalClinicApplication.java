@@ -1,5 +1,6 @@
 package com.Mafiuz04.medicalclinic.repository;
 
+import com.Mafiuz04.medicalclinic.model.ChangePassword;
 import com.Mafiuz04.medicalclinic.model.Patient;
 import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
@@ -42,7 +43,7 @@ public class PatientRepo {
         patient.setIdCardNo(newPatientData.getIdCardNo());
         patient.setPhoneNumber(newPatientData.getPhoneNumber());
     }
-    public void editPassword(Patient patient, String newPassword){
-        patient.setPassword(newPassword);
+    public void editPassword(Patient patient, ChangePassword newPassword){
+        patient.setPassword(newPassword.getPassword());
     }
 }

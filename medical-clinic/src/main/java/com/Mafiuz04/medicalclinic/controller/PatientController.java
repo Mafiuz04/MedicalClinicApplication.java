@@ -1,6 +1,7 @@
 package com.Mafiuz04.medicalclinic.controller;
 
 
+import com.Mafiuz04.medicalclinic.model.ChangePassword;
 import com.Mafiuz04.medicalclinic.model.Patient;
 import com.Mafiuz04.medicalclinic.service.PatientService;
 import org.springframework.http.HttpStatus;
@@ -48,8 +49,7 @@ public class PatientController {
 
     @PatchMapping("/{email}")
     @ResponseStatus(HttpStatus.CREATED)
-    public Patient updatePassword(@PathVariable String email, @RequestBody String newPassword) {
+    public Patient updatePassword(@PathVariable String email,@RequestBody ChangePassword newPassword) {
         return patientService.changePatientPassword(email, newPassword);
     }
-
 }
