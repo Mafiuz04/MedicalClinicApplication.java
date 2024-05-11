@@ -1,20 +1,25 @@
 package com.Mafiuz04.medicalclinic.handler;
 
+import com.Mafiuz04.medicalclinic.exception.MedicalClinicException;
+import com.Mafiuz04.medicalclinic.model.ErrorMessageDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.util.NoSuchElementException;
 
-@RestControllerAdvice
+@RestControllerAdvice// kiedy mamy RestControllera nie musimy używać ResponseEntity<T>
 public class MedicalClinicExceptionHandler {
-    @ExceptionHandler(NoSuchElementException.class)
-    public ResponseEntity<String> NoSuchElementException(NoSuchElementException ex){
-        return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+
+    @ExceptionHandler(MedicalClinicException.class)
+    public ResponseEntity<ErrorMessageDto> MedicalClinicException(MedicalClinicException ex) {
+        return ResponseEntity.status(ex.getStatus()).body(new ErrorMessageDto(ex.getStatus(), ex.getMessage()));
     }
+
     @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<String> anyExceptionResponse(){
-        return ResponseEntity.status(500).body("Unknown Error");
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public String anyExceptionResponse() {
+        return "Unknown Error";
     }
 }
