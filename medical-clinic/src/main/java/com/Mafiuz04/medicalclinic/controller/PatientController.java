@@ -3,6 +3,7 @@ package com.Mafiuz04.medicalclinic.controller;
 
 import com.Mafiuz04.medicalclinic.model.ChangePassword;
 import com.Mafiuz04.medicalclinic.model.Patient;
+import com.Mafiuz04.medicalclinic.model.PatientDto;
 import com.Mafiuz04.medicalclinic.service.PatientService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -21,19 +22,23 @@ public class PatientController {
     }
 
     @GetMapping()
-    public List<Patient> getPatients() {
-        return patientService.getPatients();
+    public List<PatientDto> getPatients() {
+        return patientService.getPatients().stream()
+                .map(patientService::convertToDto)
+                .toList();
     }
 
     @GetMapping("/{email}")
-    public Patient getPatientByEmail(@PathVariable String email) {
-        return patientService.getPatientByEmail(email);
+    public PatientDto getPatientByEmail(@PathVariable String email) {
+        Patient patientByEmail = patientService.getPatientByEmail(email);
+        return patientService.convertToDto(patientByEmail);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Patient addPatient(@RequestBody Patient patient) {
-        return patientService.addPatient(patient);
+    public PatientDto addPatient(@RequestBody Patient patient) {
+        Patient addedPatient = patientService.addPatient(patient);
+        return patientService.convertToDto(addedPatient);
     }
 
     @DeleteMapping("/{email}")
@@ -43,13 +48,15 @@ public class PatientController {
     }
 
     @PutMapping("/{email}")
-    public Patient updatePatient(@PathVariable String email, @RequestBody Patient updatedPatient) {
-        return patientService.updatePatientByMail(email, updatedPatient);
+    public PatientDto updatePatient(@PathVariable String email, @RequestBody Patient updatedPatient) {
+        Patient updatePatientByMail = patientService.updatePatientByMail(email, updatedPatient);
+        return patientService.convertToDto(updatePatientByMail);
     }
 
     @PatchMapping("/{email}")
     @ResponseStatus(HttpStatus.CREATED)
-    public Patient updatePassword(@PathVariable String email,@RequestBody ChangePassword newPassword) {
-        return patientService.changePatientPassword(email, newPassword);
+    public PatientDto updatePassword(@PathVariable String email, @RequestBody ChangePassword newPassword) {
+        Patient patientNewPassword = patientService.changePatientPassword(email, newPassword);
+        return patientService.convertToDto(patientNewPassword);
     }
 }
