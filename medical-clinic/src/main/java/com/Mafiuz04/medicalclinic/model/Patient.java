@@ -4,6 +4,7 @@ package com.Mafiuz04.medicalclinic.model;
 import lombok.Data;
 
 import java.time.LocalDate;
+
 @Data
 public class Patient {
     private String email;

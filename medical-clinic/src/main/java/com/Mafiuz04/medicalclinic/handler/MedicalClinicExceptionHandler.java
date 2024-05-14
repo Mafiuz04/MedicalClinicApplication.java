@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-
 @RestControllerAdvice// kiedy mamy RestControllera nie musimy używać ResponseEntity<T>
 public class MedicalClinicExceptionHandler {
 

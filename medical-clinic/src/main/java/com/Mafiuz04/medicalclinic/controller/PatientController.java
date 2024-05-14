@@ -23,22 +23,18 @@ public class PatientController {
 
     @GetMapping()
     public List<PatientDto> getPatients() {
-        return patientService.getPatients().stream()
-                .map(patientService::convertToDto)
-                .toList();
+        return patientService.getPatients();
     }
 
     @GetMapping("/{email}")
     public PatientDto getPatientByEmail(@PathVariable String email) {
-        Patient patientByEmail = patientService.getPatientByEmail(email);
-        return patientService.convertToDto(patientByEmail);
+        return patientService.getPatientByEmail(email);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public PatientDto addPatient(@RequestBody Patient patient) {
-        Patient addedPatient = patientService.addPatient(patient);
-        return patientService.convertToDto(addedPatient);
+        return patientService.addPatient(patient);
     }
 
     @DeleteMapping("/{email}")
@@ -49,14 +45,12 @@ public class PatientController {
 
     @PutMapping("/{email}")
     public PatientDto updatePatient(@PathVariable String email, @RequestBody Patient updatedPatient) {
-        Patient updatePatientByMail = patientService.updatePatientByMail(email, updatedPatient);
-        return patientService.convertToDto(updatePatientByMail);
+        return patientService.updatePatientByMail(email, updatedPatient);
     }
 
     @PatchMapping("/{email}")
     @ResponseStatus(HttpStatus.CREATED)
     public PatientDto updatePassword(@PathVariable String email, @RequestBody ChangePassword newPassword) {
-        Patient patientNewPassword = patientService.changePatientPassword(email, newPassword);
-        return patientService.convertToDto(patientNewPassword);
+        return patientService.changePatientPassword(email, newPassword);
     }
 }

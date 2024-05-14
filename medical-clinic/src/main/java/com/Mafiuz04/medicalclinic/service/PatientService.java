@@ -1,6 +1,7 @@
 package com.Mafiuz04.medicalclinic.service;
 
 import com.Mafiuz04.medicalclinic.exception.MedicalClinicException;
+import com.Mafiuz04.medicalclinic.mapper.PatientMapper;
 import com.Mafiuz04.medicalclinic.model.ChangePassword;
 import com.Mafiuz04.medicalclinic.model.Patient;
 import com.Mafiuz04.medicalclinic.model.PatientDto;
@@ -13,50 +14,52 @@ import java.util.List;
 @Service
 public class PatientService {
     private final PatientRepo patientRepo;
+    private final PatientMapper patientMapper;
 
-    public PatientService(PatientRepo patientRepo) {
+    public PatientService(PatientRepo patientRepo, PatientMapper patientMapper) {
         this.patientRepo = patientRepo;
+        this.patientMapper = patientMapper;
     }
 
-    public List<Patient> getPatients() {
-        return patientRepo.getPatients();
+    public List<PatientDto> getPatients() {
+        return patientMapper.mapListToDto(patientRepo.getPatients());
     }
 
-    public Patient getPatientByEmail(String email) {
-        return patientRepo.getPatient(email)
-                .orElseThrow(() -> new MedicalClinicException("There is no patient with given email.", HttpStatus.BAD_REQUEST));
+    public PatientDto getPatientByEmail(String email) {
+        return patientMapper.mapToDto(patientRepo.getPatient(email)
+                .orElseThrow(() -> new MedicalClinicException("There is no patient with given email.", HttpStatus.BAD_REQUEST)));
     }
 
-    public Patient addPatient(Patient patient) {
+    public PatientDto addPatient(Patient patient) {
         checkData(patient);
         ifGivenEmailExist(patient);
-        return patientRepo.createPatient(patient);
+        return patientMapper.mapToDto(patientRepo.createPatient(patient));
     }
 
     public void deletePatientByEmail(String email) {
         patientRepo.deletePatient(email);
     }
 
-    public Patient updatePatientByMail(String email, Patient updatedPatient) {
+    public PatientDto updatePatientByMail(String email, Patient updatedPatient) {
         Patient patient = patientRepo.getPatient(email)
                 .orElseThrow(() -> new MedicalClinicException("We can not update patient, wrong mail.", HttpStatus.BAD_REQUEST));
-        isItExistingPatient(patient,updatedPatient);
+        isItExistingPatient(patient, updatedPatient);
         checkData(updatedPatient);
         idCardNumberVerification(patient, updatedPatient);
         patientRepo.editPatient(patient, updatedPatient);
-        return patient;
+        return patientMapper.mapToDto(patient);
     }
 
-    public Patient changePatientPassword(String email, ChangePassword newPassword) {
+    public PatientDto changePatientPassword(String email, ChangePassword newPassword) {
         Patient patientByEmail = patientRepo.getPatient(email)
                 .orElseThrow(() -> new MedicalClinicException("Wrong mail", HttpStatus.BAD_REQUEST));
         patientRepo.editPassword(patientByEmail, newPassword);
-        return patientByEmail;
+        return patientMapper.mapToDto(patientByEmail);
     }
-    public PatientDto convertToDto(Patient patient){
-        return new PatientDto(patient.getEmail(),patient.getFirstName()
-                ,patient.getLastName(),patient.getPhoneNumber(),patient.getBirthday());
-    }
+//    public PatientDto convertToDto(Patient patient){
+//        return new PatientDto(patient.getEmail(),patient.getFirstName()
+//                ,patient.getLastName(),patient.getPhoneNumber(),patient.getBirthday());
+//    }
 
     private void checkData(Patient patient) {
         if (patient.getEmail() == null || patient.getPassword() == null
@@ -79,8 +82,9 @@ public class PatientService {
             throw new MedicalClinicException("You can not change ID card number.", HttpStatus.BAD_REQUEST);
         }
     }
-    private void isItExistingPatient(Patient patient, Patient updatedPatient){
-        if(!patient.getEmail().equals(updatedPatient.getEmail())){
+
+    private void isItExistingPatient(Patient patient, Patient updatedPatient) {
+        if (!patient.getEmail().equals(updatedPatient.getEmail())) {
             ifGivenEmailExist(updatedPatient);
         }
     }
