@@ -1,13 +1,12 @@
 package com.Mafiuz04.medicalclinic.exception;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-@Getter
-public class MedicalClinicException extends RuntimeException{
-private final HttpStatus status;
 
-    public MedicalClinicException(String message, HttpStatus status) {
-        super(message);
-        this.status = status;
-    }
+@Getter
+@RequiredArgsConstructor
+public class MedicalClinicException extends RuntimeException {
+    private final String message;
+    private final HttpStatus status;
 }

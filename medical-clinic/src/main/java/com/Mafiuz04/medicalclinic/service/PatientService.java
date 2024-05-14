@@ -6,20 +6,17 @@ import com.Mafiuz04.medicalclinic.model.ChangePassword;
 import com.Mafiuz04.medicalclinic.model.Patient;
 import com.Mafiuz04.medicalclinic.model.PatientDto;
 import com.Mafiuz04.medicalclinic.repository.PatientRepo;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class PatientService {
     private final PatientRepo patientRepo;
     private final PatientMapper patientMapper;
-
-    public PatientService(PatientRepo patientRepo, PatientMapper patientMapper) {
-        this.patientRepo = patientRepo;
-        this.patientMapper = patientMapper;
-    }
 
     public List<PatientDto> getPatients() {
         return patientMapper.mapListToDto(patientRepo.getPatients());
@@ -56,10 +53,6 @@ public class PatientService {
         patientRepo.editPassword(patientByEmail, newPassword);
         return patientMapper.mapToDto(patientByEmail);
     }
-//    public PatientDto convertToDto(Patient patient){
-//        return new PatientDto(patient.getEmail(),patient.getFirstName()
-//                ,patient.getLastName(),patient.getPhoneNumber(),patient.getBirthday());
-//    }
 
     private void checkData(Patient patient) {
         if (patient.getEmail() == null || patient.getPassword() == null

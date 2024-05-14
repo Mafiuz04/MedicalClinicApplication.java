@@ -5,6 +5,7 @@ import com.Mafiuz04.medicalclinic.model.ChangePassword;
 import com.Mafiuz04.medicalclinic.model.Patient;
 import com.Mafiuz04.medicalclinic.model.PatientDto;
 import com.Mafiuz04.medicalclinic.service.PatientService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,14 +13,9 @@ import java.util.List;
 
 @RequestMapping("/patients")
 @RestController
+@RequiredArgsConstructor
 public class PatientController {
     private final PatientService patientService;
-
-    //    @Autowired -> nie ma potrzeby używania tej adnotacji, gdyż mamy tylko jeden konstruktor, w przypadku wielu kontruktorów,
-//    adnotacja mówi springowi który kontruktor ma użyć
-    public PatientController(PatientService patientService) {
-        this.patientService = patientService;
-    }
 
     @GetMapping()
     public List<PatientDto> getPatients() {
