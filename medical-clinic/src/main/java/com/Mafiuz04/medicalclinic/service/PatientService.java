@@ -5,7 +5,7 @@ import com.Mafiuz04.medicalclinic.mapper.PatientMapper;
 import com.Mafiuz04.medicalclinic.model.ChangePassword;
 import com.Mafiuz04.medicalclinic.model.Patient;
 import com.Mafiuz04.medicalclinic.model.PatientDto;
-import com.Mafiuz04.medicalclinic.repository.PatientRepo;
+import com.Mafiuz04.medicalclinic.repository.JPAPatientRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -15,42 +15,45 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class PatientService {
-    private final PatientRepo patientRepo;
     private final PatientMapper patientMapper;
+    private final JPAPatientRepository patientRepository;
 
     public List<PatientDto> getPatients() {
-        return patientMapper.mapListToDto(patientRepo.getPatients());
+        return patientMapper.mapListToDto(patientRepository.findAll());
+
     }
 
     public PatientDto getPatientByEmail(String email) {
-        return patientMapper.mapToDto(patientRepo.getPatient(email)
+        return patientMapper.mapToDto(patientRepository.findById(email)
                 .orElseThrow(() -> new MedicalClinicException("There is no patient with given email.", HttpStatus.BAD_REQUEST)));
     }
 
     public PatientDto addPatient(Patient patient) {
         checkData(patient);
         ifGivenEmailExist(patient);
-        return patientMapper.mapToDto(patientRepo.createPatient(patient));
+        return patientMapper.mapToDto(patientRepository.save(patient));
     }
 
     public void deletePatientByEmail(String email) {
-        patientRepo.deletePatient(email);
+        patientRepository.deleteById(email);
     }
 
     public PatientDto updatePatientByMail(String email, Patient updatedPatient) {
-        Patient patient = patientRepo.getPatient(email)
+        Patient patient = patientRepository.findById(email)
                 .orElseThrow(() -> new MedicalClinicException("We can not update patient, wrong mail.", HttpStatus.BAD_REQUEST));
         isItExistingPatient(patient, updatedPatient);
         checkData(updatedPatient);
         idCardNumberVerification(patient, updatedPatient);
-        patientRepo.editPatient(patient, updatedPatient);
+        patientRepository.updatePatient(patient,updatedPatient);
+        patientRepository.save(patient);
         return patientMapper.mapToDto(patient);
     }
 
     public PatientDto changePatientPassword(String email, ChangePassword newPassword) {
-        Patient patientByEmail = patientRepo.getPatient(email)
+        Patient patientByEmail = patientRepository.findById(email)
                 .orElseThrow(() -> new MedicalClinicException("Wrong mail", HttpStatus.BAD_REQUEST));
-        patientRepo.editPassword(patientByEmail, newPassword);
+        patientRepository.editPatientPassword(patientByEmail, newPassword);
+        patientRepository.save(patientByEmail);
         return patientMapper.mapToDto(patientByEmail);
     }
 
@@ -64,7 +67,7 @@ public class PatientService {
     }
 
     private void ifGivenEmailExist(Patient patient) {
-        if (patientRepo.getPatients().stream()
+        if (patientRepository.findAll().stream()
                 .anyMatch(patient1 -> patient1.getEmail().equals(patient.getEmail()))) {
             throw new MedicalClinicException("The patient with the provided e-mail address already exists in our system", HttpStatus.BAD_REQUEST);
         }
