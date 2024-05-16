@@ -31,6 +31,7 @@ public class PatientService {
     public PatientDto addPatient(Patient patient) {
         checkData(patient);
         ifGivenEmailExist(patient);
+        ifGivenIdNumberExist(patient);
         return patientMapper.mapToDto(patientRepository.save(patient));
     }
 
@@ -44,7 +45,8 @@ public class PatientService {
         isItExistingPatient(patient, updatedPatient);
         checkData(updatedPatient);
         idCardNumberVerification(patient, updatedPatient);
-        patientRepository.updatePatient(patient,updatedPatient);
+        patientRepository.deleteById(email);
+        update(patient, updatedPatient);
         patientRepository.save(patient);
         return patientMapper.mapToDto(patient);
     }
@@ -52,7 +54,7 @@ public class PatientService {
     public PatientDto changePatientPassword(String email, ChangePassword newPassword) {
         Patient patientByEmail = patientRepository.findById(email)
                 .orElseThrow(() -> new MedicalClinicException("Wrong mail", HttpStatus.BAD_REQUEST));
-        patientRepository.editPatientPassword(patientByEmail, newPassword);
+        patientByEmail.setPassword(newPassword.getPassword());
         patientRepository.save(patientByEmail);
         return patientMapper.mapToDto(patientByEmail);
     }
@@ -72,6 +74,12 @@ public class PatientService {
             throw new MedicalClinicException("The patient with the provided e-mail address already exists in our system", HttpStatus.BAD_REQUEST);
         }
     }
+    private void ifGivenIdNumberExist(Patient patient) {
+        if (patientRepository.findAll().stream()
+                .anyMatch(patient1 -> patient1.getIdCardNo().equals(patient.getIdCardNo()))) {
+            throw new MedicalClinicException("GIven ID number already exists in our system", HttpStatus.BAD_REQUEST);
+        }
+    }
 
     private void idCardNumberVerification(Patient patient, Patient updatedPatient) {
         if (!patient.getIdCardNo().equals(updatedPatient.getIdCardNo())) {
@@ -84,4 +92,15 @@ public class PatientService {
             ifGivenEmailExist(updatedPatient);
         }
     }
+
+    private void update(Patient patient, Patient updatedPatient) {
+        patient.setBirthday(updatedPatient.getBirthday());
+        patient.setPassword(updatedPatient.getPassword());
+        patient.setFirstName(updatedPatient.getFirstName());
+        patient.setLastName(updatedPatient.getLastName());
+        patient.setEmail(updatedPatient.getEmail());
+        patient.setPhoneNumber(updatedPatient.getPhoneNumber());
+        patient.setIdCardNo(updatedPatient.getIdCardNo());
+    }
+
 }
