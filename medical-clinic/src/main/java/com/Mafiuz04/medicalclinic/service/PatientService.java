@@ -20,7 +20,6 @@ public class PatientService {
 
     public List<PatientDto> getPatients() {
         return patientMapper.mapListToDto(patientRepository.findAll());
-
     }
 
     public PatientDto getPatientByEmail(String email) {
