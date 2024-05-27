@@ -1,16 +1,18 @@
 package com.Mafiuz04.medicalclinic.model;
 
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @Entity
 public class Patient {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String email;
     private String password;
     private String idCardNo;
@@ -18,4 +20,6 @@ public class Patient {
     private String lastName;
     private String phoneNumber;
     private LocalDate birthday;
+    @OneToMany(mappedBy = "patient")
+    private List<Appointment> appointments;
 }

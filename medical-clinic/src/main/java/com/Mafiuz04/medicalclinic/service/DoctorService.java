@@ -2,8 +2,7 @@ package com.Mafiuz04.medicalclinic.service;
 
 import com.Mafiuz04.medicalclinic.exception.MedicalClinicException;
 import com.Mafiuz04.medicalclinic.mapper.DoctorMapper;
-import com.Mafiuz04.medicalclinic.model.Doctor;
-import com.Mafiuz04.medicalclinic.model.DoctorDto;
+import com.Mafiuz04.medicalclinic.model.*;
 import com.Mafiuz04.medicalclinic.repository.JPADoctorRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Example;
@@ -11,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -20,12 +18,11 @@ public class DoctorService {
     private final JPADoctorRepository doctorRepository;
 
     public DoctorDto addDoctor(Doctor doctor) {
-        if (doctorRepository.exists(Example.of(doctor))){
+        if (doctorRepository.exists(Example.of(doctor))) {
             throw new MedicalClinicException("Given Doctor already exist in system.", HttpStatus.BAD_REQUEST);
         }
         doctorRepository.save(doctor);
         return doctorMapper.mapToDto(doctor);
-
     }
 
     public List<DoctorDto> getDoctors() {

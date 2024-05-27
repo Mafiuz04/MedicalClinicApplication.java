@@ -30,4 +30,5 @@ public class DoctorController {
     public DoctorDto getDoctorById(@PathVariable Long id) {
         return doctorService.getById(id);
     }
+
 }

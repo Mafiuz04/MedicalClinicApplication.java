@@ -22,9 +22,9 @@ public class PatientController {
         return patientService.getPatients();
     }
 
-    @GetMapping("/{email}")
-    public PatientDto getPatientByEmail(@PathVariable String email) {
-        return patientService.getPatientByEmail(email);
+    @GetMapping("/{id}")
+    public PatientDto getPatientByEmail(@PathVariable Long id) {
+        return patientService.getPatientByEmail(id);
     }
 
     @PostMapping
@@ -33,20 +33,21 @@ public class PatientController {
         return patientService.addPatient(patient);
     }
 
-    @DeleteMapping("/{email}")
+    @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deletePatient(@PathVariable String email) {
-        patientService.deletePatientByEmail(email);
+    public void deletePatient(@PathVariable Long id) {
+        patientService.deletePatientByEmail(id);
     }
 
-    @PutMapping("/{email}")
-    public PatientDto updatePatient(@PathVariable String email, @RequestBody Patient updatedPatient) {
-        return patientService.updatePatientByMail(email, updatedPatient);
+    @PutMapping("/{id}")
+    public PatientDto updatePatient(@PathVariable Long id, @RequestBody Patient updatedPatient) {
+        return patientService.updatePatientByMail(id, updatedPatient);
     }
 
-    @PatchMapping("/{email}")
+    @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.CREATED)
-    public PatientDto updatePassword(@PathVariable String email, @RequestBody ChangePassword newPassword) {
-        return patientService.changePatientPassword(email, newPassword);
+    public PatientDto updatePassword(@PathVariable Long id, @RequestBody ChangePassword newPassword) {
+        return patientService.changePatientPassword(id, newPassword);
     }
+
 }

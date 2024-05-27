@@ -22,8 +22,8 @@ public class PatientService {
         return patientMapper.mapListToDto(patientRepository.findAll());
     }
 
-    public PatientDto getPatientByEmail(String email) {
-        return patientMapper.mapToDto(patientRepository.findById(email)
+    public PatientDto getPatientByEmail(Long id) {
+        return patientMapper.mapToDto(patientRepository.findById(id)
                 .orElseThrow(() -> new MedicalClinicException("There is no patient with given email.", HttpStatus.BAD_REQUEST)));
     }
 
@@ -34,24 +34,24 @@ public class PatientService {
         return patientMapper.mapToDto(patientRepository.save(patient));
     }
 
-    public void deletePatientByEmail(String email) {
-        patientRepository.deleteById(email);
+    public void deletePatientByEmail(Long id) {
+        patientRepository.deleteById(id);
     }
 
-    public PatientDto updatePatientByMail(String email, Patient updatedPatient) {
-        Patient patient = patientRepository.findById(email)
+    public PatientDto updatePatientByMail(Long id, Patient updatedPatient) {
+        Patient patient = patientRepository.findById(id)
                 .orElseThrow(() -> new MedicalClinicException("We can not update patient, wrong mail.", HttpStatus.BAD_REQUEST));
         isItExistingPatient(patient, updatedPatient);
         checkData(updatedPatient);
         idCardNumberVerification(patient, updatedPatient);
-        patientRepository.deleteById(email);
+        patientRepository.deleteById(id);
         update(patient, updatedPatient);
         patientRepository.save(patient);
         return patientMapper.mapToDto(patient);
     }
 
-    public PatientDto changePatientPassword(String email, ChangePassword newPassword) {
-        Patient patientByEmail = patientRepository.findById(email)
+    public PatientDto changePatientPassword(Long id, ChangePassword newPassword) {
+        Patient patientByEmail = patientRepository.findById(id)
                 .orElseThrow(() -> new MedicalClinicException("Wrong mail", HttpStatus.BAD_REQUEST));
         patientByEmail.setPassword(newPassword.getPassword());
         patientRepository.save(patientByEmail);
