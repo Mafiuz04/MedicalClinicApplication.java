@@ -8,7 +8,7 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface InstitutionMapper {
-    InstitutionDto mapToDto(Institution institution);
+    InstitutionDto toDto(Institution institution);
 
-    List<InstitutionDto> mapListToDto(List<Institution> institution);
+    List<InstitutionDto> listToDto(List<Institution> institution);
 }

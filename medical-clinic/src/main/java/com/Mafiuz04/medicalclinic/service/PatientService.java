@@ -7,6 +7,7 @@ import com.Mafiuz04.medicalclinic.model.Patient;
 import com.Mafiuz04.medicalclinic.model.PatientDto;
 import com.Mafiuz04.medicalclinic.repository.JPAPatientRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -18,12 +19,13 @@ public class PatientService {
     private final PatientMapper patientMapper;
     private final JPAPatientRepository patientRepository;
 
-    public List<PatientDto> getPatients() {
-        return patientMapper.mapListToDto(patientRepository.findAll());
+    public List<PatientDto> getPatients(Pageable pageable) {
+        List<Patient> patients = patientRepository.findAll(pageable).getContent();
+        return patientMapper.listToDto(patients);
     }
 
-    public PatientDto getPatientByEmail(Long id) {
-        return patientMapper.mapToDto(patientRepository.findById(id)
+    public PatientDto getPatientById(Long id) {
+        return patientMapper.toDto(patientRepository.findById(id)
                 .orElseThrow(() -> new MedicalClinicException("There is no patient with given email.", HttpStatus.BAD_REQUEST)));
     }
 
@@ -31,14 +33,14 @@ public class PatientService {
         checkData(patient);
         ifGivenEmailExist(patient);
         ifGivenIdNumberExist(patient);
-        return patientMapper.mapToDto(patientRepository.save(patient));
+        return patientMapper.toDto(patientRepository.save(patient));
     }
 
-    public void deletePatientByEmail(Long id) {
+    public void deletePatient(Long id) {
         patientRepository.deleteById(id);
     }
 
-    public PatientDto updatePatientByMail(Long id, Patient updatedPatient) {
+    public PatientDto updatePatient(Long id, Patient updatedPatient) {
         Patient patient = patientRepository.findById(id)
                 .orElseThrow(() -> new MedicalClinicException("We can not update patient, wrong mail.", HttpStatus.BAD_REQUEST));
         isItExistingPatient(patient, updatedPatient);
@@ -47,7 +49,7 @@ public class PatientService {
         patientRepository.deleteById(id);
         update(patient, updatedPatient);
         patientRepository.save(patient);
-        return patientMapper.mapToDto(patient);
+        return patientMapper.toDto(patient);
     }
 
     public PatientDto changePatientPassword(Long id, ChangePassword newPassword) {
@@ -55,7 +57,7 @@ public class PatientService {
                 .orElseThrow(() -> new MedicalClinicException("Wrong mail", HttpStatus.BAD_REQUEST));
         patientByEmail.setPassword(newPassword.getPassword());
         patientRepository.save(patientByEmail);
-        return patientMapper.mapToDto(patientByEmail);
+        return patientMapper.toDto(patientByEmail);
     }
 
     private void checkData(Patient patient) {

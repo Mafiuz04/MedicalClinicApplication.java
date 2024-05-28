@@ -7,12 +7,12 @@ import com.Mafiuz04.medicalclinic.repository.JPAAppointmentRepository;
 import com.Mafiuz04.medicalclinic.repository.JPADoctorRepository;
 import com.Mafiuz04.medicalclinic.repository.JPAPatientRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-
 
 @Service
 @AllArgsConstructor
@@ -32,10 +32,10 @@ public class AppointmentService {
         isEmptySlot(appointment, appointment.getStartDate(), appointment.getEndDate());
         Doctor doctor = doctorRepository.findById(appointment.getDoctorId())
                 .orElseThrow(() -> new MedicalClinicException("Chosen Doctor does not exist", HttpStatus.BAD_REQUEST));
-        Appointment appointment1 = appointmentMapper.mapToEntity(appointment);
+        Appointment appointment1 = appointmentMapper.toEntity(appointment);
         appointment1.setDoctor(doctor);
         Appointment entity = appointmentRepository.save(appointment1);
-        return appointmentMapper.mapToDto(entity);
+        return appointmentMapper.toDto(entity);
     }
 
     public AppointmentDto assignPatient(Long id, Long patientId) {
@@ -48,11 +48,11 @@ public class AppointmentService {
                 .orElseThrow(() -> new MedicalClinicException("Chosen Patient does not exist", HttpStatus.BAD_REQUEST));
         appointment.setPatient(patient);
         Appointment updatedAppointment = appointmentRepository.save(appointment);
-        return appointmentMapper.mapToDto(updatedAppointment);
+        return appointmentMapper.toDto(updatedAppointment);
     }
 
-    public List<AppointmentDto> getAppointments() {
-        List<Appointment> appointments = appointmentRepository.findAll();
+    public List<AppointmentDto> getAppointments(Pageable pageable) {
+        List<Appointment> appointments = appointmentRepository.findAll(pageable).getContent();
         return appointmentMapper.mapListToDto(appointments);
     }
 

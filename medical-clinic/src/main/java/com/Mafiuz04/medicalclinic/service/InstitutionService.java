@@ -6,6 +6,7 @@ import com.Mafiuz04.medicalclinic.model.*;
 import com.Mafiuz04.medicalclinic.repository.JPADoctorRepository;
 import com.Mafiuz04.medicalclinic.repository.JPAInstitutionRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -20,39 +21,41 @@ public class InstitutionService {
     private final InstitutionMapper institutionMapper;
 
     public InstitutionDto addInstitution(Institution institution) {
-        if (institutionRepository.existsByName(institution.getName())){
+        if (institutionRepository.existsByName(institution.getName())) {
             throw new MedicalClinicException("Given Institution already exist in system.", HttpStatus.BAD_REQUEST);
         }
-        return institutionMapper.mapToDto(institutionRepository.save(institution));
+        return institutionMapper.toDto(institutionRepository.save(institution));
     }
 
-    public List<InstitutionDto> getInstitutions() {
-        return institutionMapper.mapListToDto( institutionRepository.findAll());
+    public List<InstitutionDto> getInstitutions(Pageable pageable) {
+        List<Institution> institutions = institutionRepository.findAll(pageable).getContent();
+        return institutionMapper.listToDto(institutions);
     }
 
     public InstitutionDto getById(Long id) {
         Institution institution = institutionRepository.findById(id)
                 .orElseThrow(() -> new MedicalClinicException("There is no institution with given ID", HttpStatus.BAD_REQUEST));
-        return institutionMapper.mapToDto(institution);
+        return institutionMapper.toDto(institution);
     }
-    public InstitutionDto assignDoctor(Long doctorId, Long institutionId){
+
+    public InstitutionDto assignDoctor(Long doctorId, Long institutionId) {
         Doctor doctor = doctorRepository.findById(doctorId)
                 .orElseThrow(() -> new MedicalClinicException("There is no Doctor with given ID", HttpStatus.BAD_REQUEST));
         Institution institution = institutionRepository.findById(institutionId)
                 .orElseThrow(() -> new MedicalClinicException("There is no Institution with given ID", HttpStatus.BAD_REQUEST));
         List<Doctor> doctors = institution.getDoctors();
-        if(doctors.contains(doctor)){
+        if (doctors.contains(doctor)) {
             throw new MedicalClinicException("Doctor already assign", HttpStatus.BAD_REQUEST);
         }
         List<Institution> institutions = doctor.getInstitutions();
-        if(institutions.contains(institution)){
+        if (institutions.contains(institution)) {
             throw new MedicalClinicException("Institution already assign", HttpStatus.BAD_REQUEST);
         }
         institutions.add(institution);
         doctors.add(doctor);
         doctorRepository.save(doctor);
         institutionRepository.save(institution);
-        return institutionMapper.mapToDto(institution);
+        return institutionMapper.toDto(institution);
     }
 
 }

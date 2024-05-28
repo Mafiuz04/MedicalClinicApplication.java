@@ -6,6 +6,7 @@ import com.Mafiuz04.medicalclinic.model.Patient;
 import com.Mafiuz04.medicalclinic.model.PatientDto;
 import com.Mafiuz04.medicalclinic.service.PatientService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,13 +19,13 @@ public class PatientController {
     private final PatientService patientService;
 
     @GetMapping()
-    public List<PatientDto> getPatients() {
-        return patientService.getPatients();
+    public List<PatientDto> getPatients(Pageable pageable) {
+        return patientService.getPatients(pageable);
     }
 
     @GetMapping("/{id}")
     public PatientDto getPatientByEmail(@PathVariable Long id) {
-        return patientService.getPatientByEmail(id);
+        return patientService.getPatientById(id);
     }
 
     @PostMapping
@@ -36,12 +37,12 @@ public class PatientController {
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deletePatient(@PathVariable Long id) {
-        patientService.deletePatientByEmail(id);
+        patientService.deletePatient(id);
     }
 
     @PutMapping("/{id}")
     public PatientDto updatePatient(@PathVariable Long id, @RequestBody Patient updatedPatient) {
-        return patientService.updatePatientByMail(id, updatedPatient);
+        return patientService.updatePatient(id, updatedPatient);
     }
 
     @PatchMapping("/{id}")

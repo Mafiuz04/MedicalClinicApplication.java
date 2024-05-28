@@ -12,11 +12,11 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface PatientMapper {
 
-   PatientDto mapToDto(Patient patient);
+   PatientDto toDto(Patient patient);
 
-    List<PatientDto> mapListToDto(List<Patient> patientList);
+    List<PatientDto> listToDto(List<Patient> patientList);
     @Mapping(source = "doctor.id", target = "doctorId")
     @Mapping(source = "patient.id", target = "patientId")
-    AppointmentDto mapToDto(Appointment appointment);
+    AppointmentDto appointmentToDto(Appointment appointment);
 
 }

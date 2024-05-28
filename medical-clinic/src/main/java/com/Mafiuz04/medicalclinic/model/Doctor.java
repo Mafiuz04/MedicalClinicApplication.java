@@ -1,14 +1,16 @@
 package com.Mafiuz04.medicalclinic.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Data
-@Getter
+@AllArgsConstructor
+@RequiredArgsConstructor
 @Entity
 public class Doctor {
     @Id
@@ -21,6 +23,6 @@ public class Doctor {
     private String specialization;
     @ManyToMany(mappedBy = "doctors")
     private List<Institution> institutions = new ArrayList<>();
-    @OneToMany(mappedBy ="doctor")
+    @OneToMany(mappedBy = "doctor")
     private List<Appointment> appointments = new ArrayList<>();
 }

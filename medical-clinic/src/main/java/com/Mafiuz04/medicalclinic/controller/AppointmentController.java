@@ -3,6 +3,7 @@ package com.Mafiuz04.medicalclinic.controller;
 import com.Mafiuz04.medicalclinic.model.AppointmentDto;
 import com.Mafiuz04.medicalclinic.service.AppointmentService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,13 +22,12 @@ public class AppointmentController {
     }
 
     @PatchMapping("/{appointmentId}/patients/{patientId}")
-    @ResponseStatus(HttpStatus.OK)
     public AppointmentDto assignPatient(@PathVariable Long appointmentId, @PathVariable Long patientId) {
         return appointmentService.assignPatient(appointmentId, patientId);
     }
 
     @GetMapping
-    public List<AppointmentDto> getAppointments() {
-        return appointmentService.getAppointments();
+    public List<AppointmentDto> getAppointments(Pageable pageable) {
+        return appointmentService.getAppointments(pageable);
     }
 }

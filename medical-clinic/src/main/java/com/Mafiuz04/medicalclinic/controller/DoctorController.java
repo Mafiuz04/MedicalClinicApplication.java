@@ -1,9 +1,10 @@
 package com.Mafiuz04.medicalclinic.controller;
 
-import com.Mafiuz04.medicalclinic.model.Doctor;
+import com.Mafiuz04.medicalclinic.model.DoctorCreateDto;
 import com.Mafiuz04.medicalclinic.model.DoctorDto;
 import com.Mafiuz04.medicalclinic.service.DoctorService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,13 +18,13 @@ public class DoctorController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public DoctorDto addDoctor(@RequestBody Doctor doctor){
+    public DoctorDto addDoctor(@RequestBody DoctorCreateDto doctor){
        return doctorService.addDoctor(doctor);
     }
 
     @GetMapping
-    public List<DoctorDto> getDoctors() {
-        return doctorService.getDoctors();
+    public List<DoctorDto> getDoctors(Pageable pageable) {
+      return doctorService.getDoctors(pageable);
     }
 
     @GetMapping("/{id}")

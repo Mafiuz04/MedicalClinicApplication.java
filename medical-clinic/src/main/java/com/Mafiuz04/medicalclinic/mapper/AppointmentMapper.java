@@ -11,10 +11,11 @@ import java.util.List;
 public interface AppointmentMapper {
     @Mapping(source = "doctor.id", target = "doctorId")
     @Mapping(source = "patient.id", target = "patientId")
-    AppointmentDto mapToDto(Appointment appointment);
+    AppointmentDto toDto(Appointment appointment);
 
-    Appointment mapToEntity(AppointmentDto appointmentDto);
-
+    Appointment toEntity(AppointmentDto appointmentDto);
+    @Mapping(source = "doctor.id", target = "doctorId")
+    @Mapping(source = "patient.id", target = "patientId")
     List<AppointmentDto> mapListToDto(List<Appointment> appointments);
 
 }
