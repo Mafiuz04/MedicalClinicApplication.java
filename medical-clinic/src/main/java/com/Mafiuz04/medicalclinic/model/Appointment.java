@@ -1,12 +1,15 @@
 package com.Mafiuz04.medicalclinic.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
+@RequiredArgsConstructor
+@Getter
+@Setter
+@ToString
 @Entity
-@Data
 public class Appointment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,4 +22,16 @@ public class Appointment {
     private Patient patient;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Appointment)) return false;
+        Appointment appointment = (Appointment) o;
+        return id != null && id.equals(appointment.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }

@@ -1,12 +1,15 @@
 package com.Mafiuz04.medicalclinic.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
+@RequiredArgsConstructor
+@Getter
+@Setter
+@ToString
 @Entity
 public class Institution {
     @Id
@@ -20,4 +23,16 @@ public class Institution {
     private String buildingNumber;
     @ManyToMany
     private List<Doctor> doctors = new ArrayList<>();
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Institution)) return false;
+        Institution institution = (Institution) o;
+        return id != null && id.equals(institution.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }

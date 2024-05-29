@@ -2,12 +2,15 @@ package com.Mafiuz04.medicalclinic.model;
 
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.List;
 
-@Data
+@RequiredArgsConstructor
+@Getter
+@Setter
+@ToString
 @Entity
 public class Patient {
     @Id
@@ -22,4 +25,17 @@ public class Patient {
     private LocalDate birthday;
     @OneToMany(mappedBy = "patient")
     private List<Appointment> appointments;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Patient)) return false;
+        Patient patient = (Patient) o;
+        return id != null && id.equals(patient.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }
