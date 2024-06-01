@@ -25,8 +25,7 @@ public class Appointment {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Appointment)) return false;
-        Appointment appointment = (Appointment) o;
+        if (!(o instanceof Appointment appointment)) return false;
         return id != null && id.equals(appointment.getId());
     }
 

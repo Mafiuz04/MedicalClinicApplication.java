@@ -13,12 +13,8 @@ public interface DoctorMapper {
     List<DoctorDto> listToDto(List<Doctor> doctors);
 
     Doctor createToDoctor(DoctorCreateDto doctor);
+
     @Mapping(source = "doctor.id", target = "doctorId")
     @Mapping(source = "patient.id", target = "patientId")
     AppointmentDto appointmentToDto(Appointment appointment);
-
-
-
-
-
 }

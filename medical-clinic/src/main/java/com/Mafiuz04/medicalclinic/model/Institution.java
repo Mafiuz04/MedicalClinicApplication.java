@@ -26,8 +26,7 @@ public class Institution {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Institution)) return false;
-        Institution institution = (Institution) o;
+        if (!(o instanceof Institution institution)) return false;
         return id != null && id.equals(institution.getId());
     }
 

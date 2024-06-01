@@ -24,11 +24,11 @@ public class Doctor {
     private List<Institution> institutions = new ArrayList<>();
     @OneToMany(mappedBy = "doctor")
     private List<Appointment> appointments = new ArrayList<>();
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Doctor)) return false;
-        Doctor doctor = (Doctor) o;
+        if (!(o instanceof Doctor doctor)) return false;
         return id != null && id.equals(doctor.getId());
     }
 
