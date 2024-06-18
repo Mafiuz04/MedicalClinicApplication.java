@@ -1,5 +1,6 @@
 package com.Mafiuz04.medicalclinic.service;
 
+import com.Mafiuz04.medicalclinic.exception.MedicalClinicException;
 import com.Mafiuz04.medicalclinic.mapper.AppointmentMapper;
 import com.Mafiuz04.medicalclinic.model.*;
 import com.Mafiuz04.medicalclinic.repository.JPAAppointmentRepository;
@@ -58,8 +59,79 @@ public class AppointmentServiceTest {
         verify(appointmentRepository).save(entity);
         Assertions.assertEquals(1, appointment.getId());
     }
+
     @Test
-    void assignPatient_CorrectData_ReturnAppointmentDto(){
+    void createAppointment_StartDateInPast_ThrowException() {
+        //given
+        AppointmentDto appointmentDto = new AppointmentDto(1L, 1L, 1L, LocalDateTime.now().minusHours(1), LocalDateTime.now().plusHours(1));
+        //when
+        MedicalClinicException exception = Assertions.assertThrows(MedicalClinicException.class, () -> appointmentService.createAppointment(appointmentDto));
+        //then
+        Assertions.assertEquals("Appointment is no available any more, please check date.", exception.getMessage());
+    }
+
+    @Test
+    void createAppointment_TimeIsNotAFullQuarter_ThrowException() {
+        //given
+        AppointmentDto appointmentDto = new AppointmentDto(1L, 1L, 1L, LocalDateTime.of(2024, 06, 16, 20, 20), LocalDateTime.of(2024, 06, 16, 21, 10));
+        //when
+        MedicalClinicException exception = Assertions.assertThrows(MedicalClinicException.class, () -> appointmentService.createAppointment(appointmentDto));
+        //then
+        Assertions.assertEquals("Please change hour, the doctor sees patient every 15 minutes", exception.getMessage());
+    }
+
+    @Test
+    void createAppointment_EndDateIsIsEarlierThanStartDate_ThrowException() {
+        //given
+        AppointmentDto appointmentDto = new AppointmentDto(1L, 1L, 1L, LocalDateTime.of(2024, 06, 16, 20, 20), LocalDateTime.of(2024, 06, 16, 19, 10));
+        //when
+        MedicalClinicException exception = Assertions.assertThrows(MedicalClinicException.class, () -> appointmentService.createAppointment(appointmentDto));
+        //then
+        Assertions.assertEquals("please check ending time, it is earlier than start time", exception.getMessage());
+    }
+
+    @Test
+    void createAppointment_OverLapping_ThrowException() {
+        //given
+        AppointmentDto appointmentDto = new AppointmentDto(1L, 1L, 1L, LocalDateTime.of(2024, 06, 16, 20, 15), LocalDateTime.of(2024, 06, 16, 21, 30));
+        Appointment appointment = new Appointment();
+        appointment.setDoctor(new Doctor());
+        LocalDateTime startDate = LocalDateTime.of(2024, 6, 16, 20, 15);
+        LocalDateTime endDate = LocalDateTime.of(2024, 6, 16, 21, 30);
+        appointment.setStartDate(startDate);
+        appointment.setEndDate(endDate);
+        appointment.getDoctor().setId(1L);
+        List<Appointment> appointments = new ArrayList<>();
+        appointments.add(appointment);
+        when(appointmentRepository.overlappingAppointments(appointment.getDoctor().getId(), startDate, endDate)).thenReturn(appointments);
+        //when
+        MedicalClinicException exception = Assertions.assertThrows(MedicalClinicException.class, () -> appointmentService.createAppointment(appointmentDto));
+        //then
+        Assertions.assertEquals("Time range already taken", exception.getMessage());
+    }
+
+    @Test
+    void createAppointment_DoctorDoesNotExist_ThrowException() {
+        //given
+        AppointmentDto appointmentDto = new AppointmentDto(1L, 1L, 1L, LocalDateTime.of(2024, 06, 16, 20, 15), LocalDateTime.of(2024, 06, 16, 20, 30));
+        Appointment appointment = new Appointment();
+        appointment.setDoctor(new Doctor());
+        LocalDateTime startDate = LocalDateTime.of(2024, 6, 16, 20, 30);
+        LocalDateTime endDate = LocalDateTime.of(2024, 6, 16, 21, 45);
+        appointment.setStartDate(startDate);
+        appointment.setEndDate(endDate);
+        appointment.getDoctor().setId(1L);
+        List<Appointment> appointments = new ArrayList<>();
+        appointments.add(appointment);
+        when(appointmentRepository.overlappingAppointments(appointment.getDoctor().getId(), startDate, endDate)).thenReturn(appointments);
+        //when
+        MedicalClinicException exception = Assertions.assertThrows(MedicalClinicException.class, () -> appointmentService.createAppointment(appointmentDto));
+        //then
+        Assertions.assertEquals("Chosen Doctor does not exist", exception.getMessage());
+    }
+
+    @Test
+    void assignPatient_CorrectData_ReturnAppointmentDto() {
         //given
         Long appointmentId = 1L;
         Long patientId = 2L;
@@ -77,21 +149,65 @@ public class AppointmentServiceTest {
         AppointmentDto appointmentDto = appointmentService.assignPatient(appointmentId, patientId);
         //then
         Assertions.assertNotNull(appointment.getPatient());
-        Assertions.assertEquals(2L,appointmentDto.getPatientId());
+        Assertions.assertEquals(2L, appointmentDto.getPatientId());
+        Assertions.assertEquals(startDate, appointmentDto.getStartDate());
     }
+
     @Test
-    void getAppointments_AppointmentsExist_ReturnListOFAppointments(){
+    void assignPatient_AppointmentDoesNotExist_ThrowsException() {
+        //given
+        Long id = 1L;
+        Long patientId = 1L;
+        //when
+        MedicalClinicException exception = Assertions.assertThrows(MedicalClinicException.class, () -> appointmentService.assignPatient(id, patientId));
+        //then
+        Assertions.assertEquals("Chosen appointment does not exist", exception.getMessage());
+    }
+
+    @Test
+    void assignPatient_AppointmentPassed_ThrowException() {
+        //given
+        Long id = 1L;
+        Long patientId = 1L;
+        Appointment appointment = new Appointment();
+        appointment.setStartDate(LocalDateTime.now().minusHours(2));
+        when(appointmentRepository.findById(id)).thenReturn(Optional.of(appointment));
+        //when
+        MedicalClinicException exception = Assertions.assertThrows(MedicalClinicException.class, () -> appointmentService.assignPatient(id, patientId));
+        //then
+        Assertions.assertEquals("Appointment is no available any more, please check date.", exception.getMessage());
+    }
+
+    @Test
+    void assignPatient_PatientNotFound_ThrowException() {
+        //given
+        Long id = 1L;
+        Long patientId = 1L;
+        Appointment appointment = new Appointment();
+        appointment.setStartDate(LocalDateTime.now().plusHours(2));
+        when(appointmentRepository.findById(id)).thenReturn(Optional.of(appointment));
+        //when
+        MedicalClinicException exception = Assertions.assertThrows(MedicalClinicException.class, () -> appointmentService.assignPatient(id, patientId));
+        //then
+        Assertions.assertEquals("Chosen Patient does not exist", exception.getMessage());
+    }
+
+    @Test
+    void getAppointments_AppointmentsExist_ReturnListOFAppointments() {
         //given
         List<Appointment> appointmentList = new ArrayList<>();
         Appointment appointment = new Appointment();
         appointmentList.add(appointment);
-        Pageable pageable = PageRequest.of(0,10);
+        Pageable pageable = PageRequest.of(0, 10);
         Page<Appointment> page = new PageImpl<>(appointmentList);
         when(appointmentRepository.findAll(pageable)).thenReturn(page);
         //when
         List<AppointmentDto> appointments = appointmentService.getAppointments(pageable);
         //then
-        Assertions.assertEquals(1,appointments.size());
+        Assertions.assertEquals(1, appointments.size());
         Assertions.assertNotNull(appointments);
+        Assertions.assertEquals(appointments.get(0), appointmentMapper.toDto(appointment));
     }
+
+
 }

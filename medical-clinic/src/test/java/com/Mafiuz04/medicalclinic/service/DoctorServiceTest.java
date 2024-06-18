@@ -1,5 +1,6 @@
 package com.Mafiuz04.medicalclinic.service;
 
+import com.Mafiuz04.medicalclinic.exception.MedicalClinicException;
 import com.Mafiuz04.medicalclinic.mapper.DoctorMapper;
 import com.Mafiuz04.medicalclinic.model.Doctor;
 import com.Mafiuz04.medicalclinic.model.DoctorCreateDto;
@@ -47,11 +48,12 @@ public class DoctorServiceTest {
         Assertions.assertEquals("Cardio", doctorDto.getSpecialization());
     }
 
-    @Test /// wtf
+    @Test
+        /// wtf
     void getDoctors_DoctorsExist_ReturnListOfDoctors() {
         //given
         List<Doctor> doctors = new ArrayList<>();
-        MedicalUser user = new MedicalUser(1L,"Adam","Marczyk","asd@","password");
+        MedicalUser user = new MedicalUser(1L, "Adam", "Marczyk", "asd@", "password");
         doctors.add(new Doctor(1L, "Cardio", new ArrayList<>(), new ArrayList<>(), user));
         doctors.add(new Doctor(2L, "Endo", new ArrayList<>(), new ArrayList<>(), user));
         doctors.add(new Doctor(3L, "Gimno", new ArrayList<>(), new ArrayList<>(), user));
@@ -61,10 +63,11 @@ public class DoctorServiceTest {
         //when
         List<DoctorDto> doctors1 = doctorService.getDoctors(pageable);
         //then
-        Assertions.assertEquals(3,doctors1.size());
+        Assertions.assertEquals(3, doctors1.size());
     }
+
     @Test
-    void getDoctorById_DoctorExist_returnDoctorDto(){
+    void getDoctorById_DoctorExist_returnDoctorDto() {
         //given
         Doctor doctor = new Doctor(1L, "CArdio", new ArrayList<>(), new ArrayList<>(), new MedicalUser());
         when(doctorRepository.findById(doctor.getId())).thenReturn(Optional.of(doctor));
@@ -72,6 +75,15 @@ public class DoctorServiceTest {
         DoctorDto doctorDto = doctorService.getById(doctor.getId());
         //then
         Assertions.assertNotNull(doctorDto);
-        Assertions.assertEquals(1,doctorDto.getId());
+        Assertions.assertEquals(1, doctorDto.getId());
+    }
+
+    @Test
+    void getDoctorById_DoctorDoesNotExist_ThrowException(){
+        Long doctorId = 1L;
+
+        MedicalClinicException exception = Assertions.assertThrows(MedicalClinicException.class, () -> doctorService.getById(1L));
+
+        Assertions.assertEquals("Doctor with given id doesn't exist", exception.getMessage());
     }
 }

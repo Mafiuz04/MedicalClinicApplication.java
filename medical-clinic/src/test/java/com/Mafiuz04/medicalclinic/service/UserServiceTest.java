@@ -1,5 +1,6 @@
 package com.Mafiuz04.medicalclinic.service;
 
+import com.Mafiuz04.medicalclinic.exception.MedicalClinicException;
 import com.Mafiuz04.medicalclinic.mapper.UserMapper;
 import com.Mafiuz04.medicalclinic.model.ChangePassword;
 import com.Mafiuz04.medicalclinic.model.MedicalUser;
@@ -11,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 import org.mockito.Mockito;
 
+import javax.swing.event.ChangeEvent;
 import java.util.Optional;
 
 import static org.mockito.Mockito.verify;
@@ -39,6 +41,16 @@ public class UserServiceTest {
         //then
         Assertions.assertEquals("marko@", userDto.getEmail());
         verify(userRepository).save(user);
+    }
+
+    @Test
+    void changeUserPassword_UserDOesNotExist_ThrowException(){
+        Long userId = 1L;
+        ChangePassword password = new ChangePassword("Sadasd");
+
+        MedicalClinicException exception = Assertions.assertThrows(MedicalClinicException.class, () -> userService.changeUserPassword(userId, password));
+
+        Assertions.assertEquals("No user with given ID", exception.getMessage());
     }
 
     @Test
