@@ -82,7 +82,7 @@ public class DoctorServiceTest {
     void getDoctorById_DoctorDoesNotExist_ThrowException(){
         Long doctorId = 1L;
 
-        MedicalClinicException exception = Assertions.assertThrows(MedicalClinicException.class, () -> doctorService.getById(1L));
+        MedicalClinicException exception = Assertions.assertThrows(MedicalClinicException.class, () -> doctorService.getById(doctorId));
 
         Assertions.assertEquals("Doctor with given id doesn't exist", exception.getMessage());
     }

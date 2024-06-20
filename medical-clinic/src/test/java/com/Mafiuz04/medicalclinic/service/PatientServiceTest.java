@@ -7,13 +7,14 @@ import com.Mafiuz04.medicalclinic.model.Patient;
 import com.Mafiuz04.medicalclinic.model.PatientCreateDto;
 import com.Mafiuz04.medicalclinic.model.PatientDto;
 import com.Mafiuz04.medicalclinic.repository.JPAPatientRepository;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mapstruct.factory.Mappers;
 import org.mockito.Mockito;
-import org.mockito.stubbing.OngoingStubbing;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -23,6 +24,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -172,6 +174,27 @@ public class PatientServiceTest {
         MedicalClinicException exception = Assertions.assertThrows(MedicalClinicException.class, () -> patientService.updatePatient(id, patientCreateDto));
         Assertions.assertEquals("You can not change ID card number.",exception.getMessage());
     }
+
+    @ParameterizedTest
+    @MethodSource("providePatientsWithNull")
+    void checkPatientData_ReturnPatientWithNullField(PatientCreateDto patientCreateDto){
+        MedicalClinicException exception = Assertions.assertThrows(MedicalClinicException.class, () -> patientService.checkData(patientCreateDto));
+        Assertions.assertEquals("Please make sure that all data are included",exception.getMessage());
+    }
+
+    private static Stream<Arguments> providePatientsWithNull(){
+        return Stream.of(
+                Arguments.of(new PatientCreateDto(null,"sada",LocalDate.of(1999,12,12),new MedicalUser(1L,"asdasd","sadasd","asdasd","sda"))),
+                Arguments.of(new PatientCreateDto("sadas",null,LocalDate.of(1999,12,12),new MedicalUser(1L,"asdasd","sadasd","asdasd","sda"))),
+                Arguments.of(new PatientCreateDto("sada","sada",null,new MedicalUser(1L,"asdasd","sadasd","asdasd","sda"))),
+                Arguments.of(new PatientCreateDto("sada","sada",LocalDate.of(1999,12,12),null)),
+                Arguments.of(new PatientCreateDto("sada","sada",LocalDate.of(1999,12,12),new MedicalUser(1L,null,"sadasd","asdasd","sda"))),
+                Arguments.of(new PatientCreateDto("sada","sada",LocalDate.of(1999,12,12),new MedicalUser(1L,"asdasd",null,"asdasd","sda"))),
+                Arguments.of(new PatientCreateDto("sada","sada",LocalDate.of(1999,12,12),new MedicalUser(1L,"asdasd","sadasd",null,"sda"))),
+                Arguments.of(new PatientCreateDto("sada","sada",LocalDate.of(1999,12,12),new MedicalUser(1L,"asdasd","sadasd","asdasd",null)))
+        );
+    }
+
     Patient createPatient(Long id, String idCardNumber) {
         MedicalUser user = new MedicalUser(1L, "Adam", "Marczyk", "asd@", "password");
         return new Patient(id, idCardNumber, "sad223", LocalDate.of(2000, 12, 2), new ArrayList<>(), user);

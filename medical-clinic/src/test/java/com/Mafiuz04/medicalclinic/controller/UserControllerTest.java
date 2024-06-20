@@ -5,7 +5,6 @@ import com.Mafiuz04.medicalclinic.model.ChangePassword;
 import com.Mafiuz04.medicalclinic.model.MedicalUser;
 import com.Mafiuz04.medicalclinic.model.UserDto;
 import com.Mafiuz04.medicalclinic.service.UserService;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +17,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -34,6 +32,7 @@ public class UserControllerTest {
 
     @Autowired
     UserMapper userMapper;
+
     @Autowired
     ObjectMapper objectMapper;
 
@@ -60,7 +59,9 @@ public class UserControllerTest {
         UserDto dto = userMapper.toDto(user);
         when(userService.changeUserPassword(id,changePassword)).thenReturn(dto);
 
-        mockMvc.perform(MockMvcRequestBuilders.patch("/users/1/password").content(objectMapper.writeValueAsString(changePassword.getPassword())).contentType(MediaType.APPLICATION_JSON_VALUE))
+        mockMvc.perform(MockMvcRequestBuilders.patch("/users/1/password")
+                        .content(objectMapper.writeValueAsString(changePassword.getPassword()))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(1))

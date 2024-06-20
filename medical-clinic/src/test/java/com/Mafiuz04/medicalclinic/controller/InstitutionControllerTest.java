@@ -4,7 +4,6 @@ import com.Mafiuz04.medicalclinic.mapper.InstitutionMapper;
 import com.Mafiuz04.medicalclinic.model.Institution;
 import com.Mafiuz04.medicalclinic.model.InstitutionDto;
 import com.Mafiuz04.medicalclinic.service.InstitutionService;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

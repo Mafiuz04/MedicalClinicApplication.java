@@ -1,17 +1,12 @@
 package com.Mafiuz04.medicalclinic.controller;
 
 import com.Mafiuz04.medicalclinic.mapper.AppointmentMapper;
-import com.Mafiuz04.medicalclinic.mapper.InstitutionMapper;
 import com.Mafiuz04.medicalclinic.model.AppointmentDto;
-import com.Mafiuz04.medicalclinic.model.MedicalUser;
 import com.Mafiuz04.medicalclinic.service.AppointmentService;
-import com.Mafiuz04.medicalclinic.service.InstitutionService;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.mockito.stubbing.OngoingStubbing;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.AutoConfigurationPackage;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -19,14 +14,10 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import javax.print.attribute.standard.Media;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;

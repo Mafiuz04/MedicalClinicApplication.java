@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 import org.mockito.Mockito;
 
-import javax.swing.event.ChangeEvent;
 import java.util.Optional;
 
 import static org.mockito.Mockito.verify;
