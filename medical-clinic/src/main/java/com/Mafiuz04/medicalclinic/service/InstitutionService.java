@@ -72,5 +72,4 @@ public class InstitutionService {
         institutionRepository.save(institution);
         return institutionMapper.toDto(institution);
     }
-
 }

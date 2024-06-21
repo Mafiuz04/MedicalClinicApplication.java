@@ -1,8 +1,6 @@
 package com.Mafiuz04.medicalclinic.controller;
 
-
-import com.Mafiuz04.medicalclinic.model.ChangePassword;
-import com.Mafiuz04.medicalclinic.model.Patient;
+import com.Mafiuz04.medicalclinic.model.PatientCreateDto;
 import com.Mafiuz04.medicalclinic.model.PatientDto;
 import com.Mafiuz04.medicalclinic.service.PatientService;
 import lombok.RequiredArgsConstructor;
@@ -24,13 +22,13 @@ public class PatientController {
     }
 
     @GetMapping("/{id}")
-    public PatientDto getPatientByEmail(@PathVariable Long id) {
+    public PatientDto getPatientById(@PathVariable Long id) {
         return patientService.getPatientById(id);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public PatientDto addPatient(@RequestBody Patient patient) {
+    public PatientDto addPatient(@RequestBody PatientCreateDto patient) {
         return patientService.addPatient(patient);
     }
 
@@ -41,14 +39,7 @@ public class PatientController {
     }
 
     @PutMapping("/{id}")
-    public PatientDto updatePatient(@PathVariable Long id, @RequestBody Patient updatedPatient) {
+    public PatientDto updatePatient(@PathVariable Long id, @RequestBody PatientCreateDto updatedPatient) {
         return patientService.updatePatient(id, updatedPatient);
     }
-
-    @PatchMapping("/{id}")
-    @ResponseStatus(HttpStatus.CREATED)
-    public PatientDto updatePassword(@PathVariable Long id, @RequestBody ChangePassword newPassword) {
-        return patientService.changePatientPassword(id, newPassword);
-    }
-
 }

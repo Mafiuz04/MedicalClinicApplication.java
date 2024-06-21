@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
 @ToString
@@ -15,15 +16,14 @@ public class Doctor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String firstName;
-    private String lastName;
-    private String email;
-    private String password;
     private String specialization;
     @ManyToMany(mappedBy = "doctors")
     private List<Institution> institutions = new ArrayList<>();
     @OneToMany(mappedBy = "doctor")
     private List<Appointment> appointments = new ArrayList<>();
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private MedicalUser medicalUser;
 
     @Override
     public boolean equals(Object o) {

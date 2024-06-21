@@ -27,8 +27,8 @@ public class DoctorService {
 
     //TC1: W przypadku gdy istnieje lista doctorów, zostanie ona zwrócona.
     public List<DoctorDto> getDoctors(Pageable pageable) {
-        List<Doctor> allList = doctorRepository.findAll(pageable).getContent();
-        return doctorMapper.listToDto(allList);
+        List<Doctor> doctors = doctorRepository.findAll(pageable).getContent();
+        return doctorMapper.listToDto(doctors);
     }
 
     //TC1: W przypadku gdy doctor o danym ID istnieje, zostanie przemapowany i zwrócony.

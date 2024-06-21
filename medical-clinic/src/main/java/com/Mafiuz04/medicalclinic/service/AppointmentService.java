@@ -50,7 +50,7 @@ public class AppointmentService {
         return appointmentMapper.toDto(entity);
     }
 
-    //TC1: W przypadku gdy wizyta o raz pacient podanych ID istnieją, pacient zostanie podpięty do wizyty, a wizyta zostanie zapisana oraz zmapowana.
+    //TC1: W przypadku gdy wizyta oraz pacient o podanych ID istnieją, pacient zostanie podpięty do wizyty, a wizyta zostanie zapisana oraz zmapowana.
     //TC2: W przypadku gdy wizyta o podanym ID nieistnieje, powienien zostać rzucony wyjątek.
     //TC3: W Przypadku gdy wizyta o podanym ID istnieje, a pacient o podanym ID nie, powinien zostać rzocony wyjątek.
     @Transactional

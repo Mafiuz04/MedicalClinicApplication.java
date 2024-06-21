@@ -14,7 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
     private final JPAUserRepository userRepository;
     private final UserMapper userMapper;
-//TC1:W przypadku gdy user o danym ID istnieje,
+
+    //TC1:W przypadku gdy user o danym ID istnieje,
     @Transactional
     public UserDto changeUserPassword(Long id, ChangePassword newPassword) {
         MedicalUser user = userRepository.findById(id)
