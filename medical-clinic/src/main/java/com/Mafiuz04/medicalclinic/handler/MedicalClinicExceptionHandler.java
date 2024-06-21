@@ -19,6 +19,6 @@ public class MedicalClinicExceptionHandler {
     @ExceptionHandler(RuntimeException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public String anyExceptionResponse() {
-        return "Unknown Error";
+    return "Unknown error";
     }
 }

@@ -1,10 +1,9 @@
 package com.Mafiuz04.medicalclinic.model;
 
-
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -12,25 +11,25 @@ import java.util.List;
 @Setter
 @ToString
 @Entity
-public class Patient {
+public class Doctor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String email;
-    private String password;
-    private String idCardNo;
     private String firstName;
     private String lastName;
-    private String phoneNumber;
-    private LocalDate birthday;
-    @OneToMany(mappedBy = "patient")
-    private List<Appointment> appointments;
+    private String email;
+    private String password;
+    private String specialization;
+    @ManyToMany(mappedBy = "doctors")
+    private List<Institution> institutions = new ArrayList<>();
+    @OneToMany(mappedBy = "doctor")
+    private List<Appointment> appointments = new ArrayList<>();
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Patient patient)) return false;
-        return id != null && id.equals(patient.getId());
+        if (!(o instanceof Doctor doctor)) return false;
+        return id != null && id.equals(doctor.getId());
     }
 
     @Override
