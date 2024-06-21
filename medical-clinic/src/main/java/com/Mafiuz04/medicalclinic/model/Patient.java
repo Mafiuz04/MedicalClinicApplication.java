@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @RequiredArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
 @ToString
@@ -16,15 +17,14 @@ public class Patient {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String email;
-    private String password;
     private String idCardNo;
-    private String firstName;
-    private String lastName;
     private String phoneNumber;
     private LocalDate birthday;
     @OneToMany(mappedBy = "patient")
     private List<Appointment> appointments;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id")
+    private MedicalUser medicalUser;
 
     @Override
     public boolean equals(Object o) {

@@ -34,9 +34,8 @@ public class PatientService {
     }
 
     public PatientDto addPatient(PatientCreateDto patientCreateDto) {
-//        checkData(patientCreateDto);
-//        ifGivenEmailExist(patientCreateDto);
-//        ifGivenIdNumberExist(patientCreateDto);
+        checkData(patientCreateDto);
+        ifGivenEmailExist(patientCreateDto);
         Patient patient = patientMapper.createToPatient(patientCreateDto);
         return patientMapper.toDto(patientRepository.save(patient));
     }
@@ -52,9 +51,9 @@ public class PatientService {
     //TC3:  Wprzypadku gdy pacjent o danym ID istnieje, ale brakuje danych zostanie rzucony wyjatek.
     //TC4: P przypadku gdy pacjent o danym ID istnieje, podane są wszystkie dane, ale został zmieniony nr dowodu, powienie zostać rzucony wyjatek.
     @Transactional
-    public PatientDto updatePatient(Long id, Patient updatedPatient) {
+    public PatientDto updatePatient(Long id, PatientCreateDto updatedPatient) {
         Patient patient = patientRepository.findById(id)
-                .orElseThrow(() -> new MedicalClinicException("We can not update patient, wrong mail.", HttpStatus.BAD_REQUEST));
+                .orElseThrow(() -> new MedicalClinicException("We can not update patient, wrong id.", HttpStatus.BAD_REQUEST));
         isItExistingPatient(patient, updatedPatient);
         checkData(updatedPatient);
         idCardNumberVerification(patient, updatedPatient);
@@ -64,8 +63,8 @@ public class PatientService {
         return patientMapper.toDto(patient);
     }
 
-    private void checkData(Patient patient) {
-        if (patient.getMedicalUser().getEmail() == null || patient.getMedicalUser().getPassword() == null
+    public void checkData(PatientCreateDto patient) {
+        if (patient.getMedicalUser() == null || patient.getMedicalUser().getEmail() == null || patient.getMedicalUser().getPassword() == null
                 || patient.getBirthday() == null || patient.getMedicalUser().getFirstName() == null
                 || patient.getMedicalUser().getLastName() == null || patient.getPhoneNumber() == null
                 || patient.getIdCardNo() == null) {
@@ -73,33 +72,26 @@ public class PatientService {
         }
     }
 
-    private void ifGivenEmailExist(Patient patient) {
+    private void ifGivenEmailExist(PatientCreateDto patient) {
         if (patientRepository.findAll().stream()
                 .anyMatch(patient1 -> patient1.getMedicalUser().getEmail().equals(patient.getMedicalUser().getEmail()))) {
             throw new MedicalClinicException("The patient with the provided e-mail address already exists in our system", HttpStatus.BAD_REQUEST);
         }
     }
 
-    private void ifGivenIdNumberExist(Patient patient) {
-        if (patientRepository.findAll().stream()
-                .anyMatch(patient1 -> patient1.getIdCardNo().equals(patient.getIdCardNo()))) {
-            throw new MedicalClinicException("GIven ID number already exists in our system", HttpStatus.BAD_REQUEST);
-        }
-    }
-
-    private void idCardNumberVerification(Patient patient, Patient updatedPatient) {
+    private void idCardNumberVerification(Patient patient, PatientCreateDto updatedPatient) {
         if (!patient.getIdCardNo().equals(updatedPatient.getIdCardNo())) {
             throw new MedicalClinicException("You can not change ID card number.", HttpStatus.BAD_REQUEST);
         }
     }
 
-    private void isItExistingPatient(Patient patient, Patient updatedPatient) {
+    private void isItExistingPatient(Patient patient, PatientCreateDto updatedPatient) {
         if (!patient.getMedicalUser().getEmail().equals(updatedPatient.getMedicalUser().getEmail())) {
-            ifGivenEmailExist(updatedPatient);
+            throw new MedicalClinicException("The patient with the provided e-mail address does not exists in our system", HttpStatus.BAD_REQUEST);
         }
     }
 
-    private void update(Patient patient, Patient updatedPatient) {
+    private void update(Patient patient, PatientCreateDto updatedPatient) {
         patient.setBirthday(updatedPatient.getBirthday());
         patient.getMedicalUser().setPassword(updatedPatient.getMedicalUser().getPassword());
         patient.getMedicalUser().setFirstName(updatedPatient.getMedicalUser().getFirstName());
@@ -108,5 +100,4 @@ public class PatientService {
         patient.setPhoneNumber(updatedPatient.getPhoneNumber());
         patient.setIdCardNo(updatedPatient.getIdCardNo());
     }
-
 }
