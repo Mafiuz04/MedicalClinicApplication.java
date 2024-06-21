@@ -44,7 +44,9 @@ public class AppointmentControllerTest {
                 new AppointmentDto(1L, 1L, 1L, LocalDateTime.of(2025, 12, 12, 12, 12), LocalDateTime.of(2025, 12, 13, 12, 12))
         );
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/appointments").content(objectMapper.writeValueAsString(appointmentDtoOngoingStubbing)).contentType(MediaType.APPLICATION_JSON_VALUE))
+        mockMvc.perform(MockMvcRequestBuilders.post("/appointments")
+                        .content(objectMapper.writeValueAsString(appointmentDtoOngoingStubbing))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value(1))
@@ -59,7 +61,8 @@ public class AppointmentControllerTest {
                 new AppointmentDto(1L, 1L, 1L, LocalDateTime.of(2025, 12, 12, 12, 12), LocalDateTime.of(2025, 12, 13, 12, 12))
         );
 
-        mockMvc.perform(MockMvcRequestBuilders.patch("/appointments/1/patients/1").contentType(MediaType.APPLICATION_JSON_VALUE))
+        mockMvc.perform(MockMvcRequestBuilders.patch("/appointments/1/patients/1")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.doctorId").value(1))
@@ -74,7 +77,8 @@ public class AppointmentControllerTest {
                 new AppointmentDto(2L, 2L, 2L, LocalDateTime.of(2025, 12, 12, 12, 12), LocalDateTime.of(2025, 12, 13, 12, 12)))
         );
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/appointments").contentType(MediaType.APPLICATION_JSON_VALUE))
+        mockMvc.perform(MockMvcRequestBuilders.get("/appointments")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id").value(1))

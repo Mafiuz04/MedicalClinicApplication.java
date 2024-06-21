@@ -43,8 +43,8 @@ public class PatientControllerTest {
     void getPatients_PatientsExist_ReturnPatients() throws Exception {
         when(patientService.getPatients(any()))
                 .thenReturn(List.of(
-                        new PatientDto(1L, LocalDate.of(1999, 12, 12), new ArrayList<AppointmentDto>(), new MedicalUser(1L, "Marek", "mama", "sadasd", "sadas")),
-                        new PatientDto(2L, LocalDate.of(2000, 11, 11), new ArrayList<AppointmentDto>(), new MedicalUser(2L, "Marek", "mama", "sadasd", "sadas")))
+                        new PatientDto(1L, LocalDate.of(1999, 12, 12), new ArrayList<>(), new MedicalUser(1L, "Marek", "mama", "sadasd", "sadas")),
+                        new PatientDto(2L, LocalDate.of(2000, 11, 11), new ArrayList<>(), new MedicalUser(2L, "Marek", "mama", "sadasd", "sadas")))
                 );
         mockMvc.perform(MockMvcRequestBuilders.get("/patients").contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andDo(print())
@@ -61,12 +61,12 @@ public class PatientControllerTest {
     }
 
     @Test
-    void getPatientById_ReturnPatient() throws Exception {
+    void getPatientById_PatientExist_ReturnPatient() throws Exception {
         Long patientId = 1L;
         when(patientService.getPatientById(patientId))
                 .thenReturn(
                         new PatientDto(1L, LocalDate.of(1999, 12, 12),
-                                new ArrayList<AppointmentDto>(),
+                                new ArrayList<>(),
                                 new MedicalUser(1L, "Marek", "mama", "sadasd", "sadas")));
 
         mockMvc.perform(MockMvcRequestBuilders.get("/patients/1").contentType(MediaType.APPLICATION_JSON_VALUE))
@@ -79,7 +79,7 @@ public class PatientControllerTest {
     }
 
     @Test
-    void addPatient_ReturnPatientDto() throws Exception {
+    void addPatient_PatientAdded_ReturnPatientDto() throws Exception {
         PatientCreateDto patientCreateDto = new PatientCreateDto("sadasd", "sda", LocalDate.of(1999, 12, 12),
                 new MedicalUser(1L, "Marek", "mama", "sadasd", "sadas"));
         Patient patient = patientMapper.createToPatient(patientCreateDto);
@@ -100,14 +100,14 @@ public class PatientControllerTest {
     }
 
     @Test
-    void deletePatientById() throws Exception {
+    void deletePatientById_PatientDeleted() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.delete("/patients/1").contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andDo(print())
                 .andExpect(status().isNoContent());
     }
 
     @Test
-    void updatePatient_ReturnPatientDto() throws Exception {
+    void updatePatient_PatientUpdated_ReturnPatientDto() throws Exception {
         PatientCreateDto patientCreateDto = new PatientCreateDto("123123", "saasdsad", LocalDate.of(1999, 12, 12),
                 new MedicalUser(1L, "asdasd", "saadas", "sadas@", "sadasd"));
         Patient patient = patientMapper.createToPatient(patientCreateDto);

@@ -50,7 +50,9 @@ public class DoctorControllerTest {
         DoctorDto dto = doctorMapper.tooDto(doctor);
         when(doctorService.addDoctor(any())).thenReturn(dto);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/doctors").content(objectMapper.writeValueAsString(createDto)).contentType(MediaType.APPLICATION_JSON_VALUE))
+        mockMvc.perform(MockMvcRequestBuilders.post("/doctors")
+                        .content(objectMapper.writeValueAsString(createDto))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value(1))

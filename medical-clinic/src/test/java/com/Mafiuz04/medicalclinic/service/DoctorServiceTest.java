@@ -49,7 +49,6 @@ public class DoctorServiceTest {
     }
 
     @Test
-        /// wtf
     void getDoctors_DoctorsExist_ReturnListOfDoctors() {
         //given
         List<Doctor> doctors = new ArrayList<>();
