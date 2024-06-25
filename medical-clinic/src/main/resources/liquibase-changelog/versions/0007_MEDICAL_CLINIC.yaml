@@ -1,0 +1,25 @@
+databaseChangeLog:
+  - changeSet:
+      id: 7
+      author: Mateusz
+      changes:
+        - createTable:
+            tableName: INSTITUTION_DOCTORS
+            columns:
+              - column:
+                  name: doctor_id
+                  type: int
+                  constraints:
+                    nullable: false
+                    foreignKey: true
+                    foreignKeyName: id
+              - column:
+                  name: institution_id
+                  type: int
+                  constraints:
+                    nullable: false
+                    foreignKey: true
+                    foreignKeyName: id
+        - addPrimaryKey:
+            tableName: INSTITUTION_DOCTORS
+            columnNames: doctor_id, institution_id

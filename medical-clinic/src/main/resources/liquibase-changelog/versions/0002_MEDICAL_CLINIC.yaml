@@ -1,0 +1,19 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2
+      author: Mateusz
+      changes:
+        - createTable:
+            tableName: DOCTOR
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: doctor_id
+              - column:
+                  name: specialization
+                  type: char

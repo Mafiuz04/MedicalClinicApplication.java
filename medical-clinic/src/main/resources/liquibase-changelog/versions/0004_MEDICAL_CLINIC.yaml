@@ -1,0 +1,34 @@
+databaseChangeLog:
+  - changeSet:
+      id: 4
+      author: Mateusz
+      changes:
+        - createTable:
+            tableName: INSTITUTION
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: institution_id
+              - column:
+                  name: name
+                  type: char
+                  constraints:
+                    unique: true
+                    uniqueConstraintName: name
+              - column:
+                  name: city
+                  type: char
+              - column:
+                  name: postCode
+                  type: char
+              - column:
+                  name: address
+                  type: char
+              - column:
+                  name: buildingNumber
+                  type: char

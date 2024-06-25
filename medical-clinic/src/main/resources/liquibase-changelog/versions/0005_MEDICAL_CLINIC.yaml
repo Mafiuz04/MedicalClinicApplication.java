@@ -1,0 +1,28 @@
+databaseChangeLog:
+  - changeSet:
+      id: 5
+      author: Mateusz
+      changes:
+        - createTable:
+            tableName: MEDICAL_USER
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: user_id
+              - column:
+                  name: firstName
+                  type: char
+              - column:
+                  name: lastName
+                  type: char
+              - column:
+                  name: email
+                  type: char
+              - column:
+                  name: password
+                  type: char

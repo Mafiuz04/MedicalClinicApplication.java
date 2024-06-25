@@ -1,0 +1,34 @@
+databaseChangeLog:
+  - changeSet:
+      id: 3
+      author: Mateusz
+      changes:
+        - createTable:
+            tableName: APPOINTMENT
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: appointment_id
+              - column:
+                  name: doctor_id
+                  type: int
+                  constraints:
+                    foreignKey: true
+                    foreignKeyName: id
+              - column:
+                  name: patient_id
+                  type: int
+                  constraints:
+                    foreignKey: true
+                    foreignKeyName: id
+              - column:
+                  name: startDate
+                  type: date
+              - column:
+                  name: endDate
+                  type: date
