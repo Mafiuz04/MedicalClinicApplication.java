@@ -1,0 +1,34 @@
+databaseChangeLog:
+  - changeSet:
+      id: 4
+      author: Mateusz
+      changes:
+        - createTable:
+            tableName: INSTITUTION
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_institution_id
+              - column:
+                  name: name
+                  type: varchar(15)
+                  constraints:
+                    unique: true
+                    uniqueConstraintName: uq_institution_name
+              - column:
+                  name: city
+                  type: varchar(25)
+              - column:
+                  name: postCode
+                  type: char(5)
+              - column:
+                  name: address
+                  type: varchar(25)
+              - column:
+                  name: buildingNumber
+                  type: varchar(5)

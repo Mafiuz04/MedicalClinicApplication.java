@@ -1,0 +1,25 @@
+databaseChangeLog:
+  - changeSet:
+      id: 6
+      author: Mateusz
+      changes:
+        - addColumn:
+            tableName: PATIENT
+            columns:
+              - column:
+                  name: user_id
+                  type: int
+                  constraints:
+                    foreignKey: true
+                    foreignKeyName: fk_patient_user_id
+                    references: MEDICAL_USER(id)
+        - addColumn:
+            tableName: DOCTOR
+            columns:
+              - column:
+                  name: user_id
+                  type: int
+                  constraints:
+                    foreignKey: true
+                    foreignKeyName: fk_doctor_user_id
+                    references: MEDICAL_USER(id)
