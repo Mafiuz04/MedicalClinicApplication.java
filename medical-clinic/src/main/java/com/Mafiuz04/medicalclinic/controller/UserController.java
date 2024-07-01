@@ -7,18 +7,25 @@ import com.Mafiuz04.medicalclinic.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RequestMapping("/users")
 @RestController
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
 
+    @GetMapping
+    public List<UserDto> getUsers(){
+        return userService.getUsers();
+    }
+
     @PostMapping
     public UserDto addUser(@RequestBody MedicalUser user) {
         return userService.createUser(user);
     }
 
-    @PatchMapping("/{id}/password")
+    @PatchMapping("/{id}")
     public UserDto updateUserPassword(@PathVariable Long id, @RequestBody ChangePassword newPassword) {
         return userService.changeUserPassword(id, newPassword);
     }

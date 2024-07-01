@@ -13,13 +13,13 @@ databaseChangeLog:
                 constraints:
                  nullable: false
                  primaryKey: true
-                 primaryKeyName: patient_id
+                 primaryKeyName: pk_patient_id
             - column:
                 name: idCardNo
-                type: char
+                type: varchar(10)
             - column:
                 name: phoneNumber
-                type: char
+                type: varchar(12)
             - column:
                 name: birthday
                 type: date

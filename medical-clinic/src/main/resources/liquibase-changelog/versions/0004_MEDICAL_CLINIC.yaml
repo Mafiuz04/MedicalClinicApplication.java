@@ -13,22 +13,22 @@ databaseChangeLog:
                   constraints:
                     nullable: false
                     primaryKey: true
-                    primaryKeyName: institution_id
+                    primaryKeyName: pk_institution_id
               - column:
                   name: name
-                  type: char
+                  type: varchar(15)
                   constraints:
                     unique: true
-                    uniqueConstraintName: name
+                    uniqueConstraintName: uq_institution_name
               - column:
                   name: city
-                  type: char
+                  type: varchar(25)
               - column:
                   name: postCode
-                  type: char
+                  type: char(5)
               - column:
                   name: address
-                  type: char
+                  type: varchar(25)
               - column:
                   name: buildingNumber
-                  type: char
+                  type: varchar(5)

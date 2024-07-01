@@ -40,7 +40,7 @@ public class PatientService {
         return patientMapper.toDto(patientRepository.save(patient));
     }
 
-    //TC1: W przypadku istnienia pacjenata o danym ID, zostanie on usnięty z reposytorium.
+    //TC1: W przypadku istnienia pacjenata o danym ID, zostanie on usnięty z repozytorium.
     public void deletePatient(Long id) {
         patientRepository.deleteById(id);
     }
@@ -59,8 +59,9 @@ public class PatientService {
         idCardNumberVerification(patient, updatedPatient);
         patientRepository.deleteById(id);
         update(patient, updatedPatient);
-        patientRepository.save(patient);
-        return patientMapper.toDto(patient);
+        Patient save = patientRepository.save(patient);
+        PatientDto dto = patientMapper.toDto(save);
+        return dto;
     }
 
     public void checkData(PatientCreateDto patient) {
@@ -93,11 +94,11 @@ public class PatientService {
 
     private void update(Patient patient, PatientCreateDto updatedPatient) {
         patient.setBirthday(updatedPatient.getBirthday());
+
         patient.getMedicalUser().setPassword(updatedPatient.getMedicalUser().getPassword());
         patient.getMedicalUser().setFirstName(updatedPatient.getMedicalUser().getFirstName());
         patient.getMedicalUser().setLastName(updatedPatient.getMedicalUser().getLastName());
         patient.getMedicalUser().setEmail(updatedPatient.getMedicalUser().getEmail());
         patient.setPhoneNumber(updatedPatient.getPhoneNumber());
-        patient.setIdCardNo(updatedPatient.getIdCardNo());
     }
 }

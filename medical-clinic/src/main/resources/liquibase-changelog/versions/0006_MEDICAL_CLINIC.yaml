@@ -11,7 +11,8 @@ databaseChangeLog:
                   type: int
                   constraints:
                     foreignKey: true
-                    foreignKeyName: user_id
+                    foreignKeyName: fk_patient_user_id
+                    references: MEDICAL_USER(id)
         - addColumn:
             tableName: DOCTOR
             columns:
@@ -20,4 +21,5 @@ databaseChangeLog:
                   type: int
                   constraints:
                     foreignKey: true
-                    foreignKeyName: user_id
+                    foreignKeyName: fk_doctor_user_id
+                    references: MEDICAL_USER(id)

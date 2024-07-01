@@ -13,7 +13,7 @@ databaseChangeLog:
                   constraints:
                     nullable: false
                     primaryKey: true
-                    primaryKeyName: doctor_id
+                    primaryKeyName: pk_doctor_id
               - column:
                   name: specialization
-                  type: char
+                  type: varchar(20)

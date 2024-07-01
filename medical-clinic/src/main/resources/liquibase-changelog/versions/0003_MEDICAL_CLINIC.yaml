@@ -13,19 +13,19 @@ databaseChangeLog:
                   constraints:
                     nullable: false
                     primaryKey: true
-                    primaryKeyName: appointment_id
+                    primaryKeyName: pk_appointment_id
               - column:
                   name: doctor_id
                   type: int
                   constraints:
                     foreignKey: true
-                    foreignKeyName: id
+                    foreignKeyName: fk_doctor_id
               - column:
                   name: patient_id
                   type: int
                   constraints:
                     foreignKey: true
-                    foreignKeyName: id
+                    foreignKeyName: fk_patient_id
               - column:
                   name: startDate
                   type: date

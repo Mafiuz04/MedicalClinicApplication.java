@@ -73,7 +73,7 @@ public class AppointmentServiceTest {
     @Test
     void createAppointment_TimeIsNotAFullQuarter_ThrowException() {
         //given
-        AppointmentDto appointmentDto = new AppointmentDto(1L, 1L, 1L, LocalDateTime.of(2024, 6, 16, 20, 20), LocalDateTime.of(2024, 6, 16, 21, 10));
+        AppointmentDto appointmentDto = new AppointmentDto(1L, 1L, 1L, LocalDateTime.of(2026, 6, 16, 20, 20), LocalDateTime.of(2026, 6, 16, 21, 10));
         //when
         MedicalClinicException exception = Assertions.assertThrows(MedicalClinicException.class, () -> appointmentService.createAppointment(appointmentDto));
         //then
@@ -83,7 +83,7 @@ public class AppointmentServiceTest {
     @Test
     void createAppointment_EndDateIsIsEarlierThanStartDate_ThrowException() {
         //given
-        AppointmentDto appointmentDto = new AppointmentDto(1L, 1L, 1L, LocalDateTime.of(2024, 6, 16, 20, 20), LocalDateTime.of(2024, 6, 16, 19, 10));
+        AppointmentDto appointmentDto = new AppointmentDto(1L, 1L, 1L, LocalDateTime.of(2026, 6, 16, 20, 20), LocalDateTime.of(2026, 6, 16, 19, 10));
         //when
         MedicalClinicException exception = Assertions.assertThrows(MedicalClinicException.class, () -> appointmentService.createAppointment(appointmentDto));
         //then
@@ -93,11 +93,11 @@ public class AppointmentServiceTest {
     @Test
     void createAppointment_OverLapping_ThrowException() {
         //given
-        AppointmentDto appointmentDto = new AppointmentDto(1L, 1L, 1L, LocalDateTime.of(2024, 6, 16, 20, 15), LocalDateTime.of(2024, 6, 16, 21, 30));
+        AppointmentDto appointmentDto = new AppointmentDto(1L, 1L, 1L, LocalDateTime.of(2026, 6, 16, 20, 15), LocalDateTime.of(2026, 6, 16, 21, 30));
         Appointment appointment = new Appointment();
         appointment.setDoctor(new Doctor());
-        LocalDateTime startDate = LocalDateTime.of(2024, 6, 16, 20, 15);
-        LocalDateTime endDate = LocalDateTime.of(2024, 6, 16, 21, 30);
+        LocalDateTime startDate = LocalDateTime.of(2026, 6, 16, 20, 15);
+        LocalDateTime endDate = LocalDateTime.of(2026, 6, 16, 21, 30);
         appointment.setStartDate(startDate);
         appointment.setEndDate(endDate);
         appointment.getDoctor().setId(1L);
@@ -113,11 +113,11 @@ public class AppointmentServiceTest {
     @Test
     void createAppointment_DoctorDoesNotExist_ThrowException() {
         //given
-        AppointmentDto appointmentDto = new AppointmentDto(1L, 1L, 1L, LocalDateTime.of(2024, 6, 16, 20, 15), LocalDateTime.of(2024, 6, 16, 20, 30));
+        AppointmentDto appointmentDto = new AppointmentDto(1L, 1L, 1L, LocalDateTime.of(2026, 6, 16, 20, 15), LocalDateTime.of(2026, 6, 16, 20, 30));
         Appointment appointment = new Appointment();
         appointment.setDoctor(new Doctor());
-        LocalDateTime startDate = LocalDateTime.of(2024, 6, 16, 20, 30);
-        LocalDateTime endDate = LocalDateTime.of(2024, 6, 16, 21, 45);
+        LocalDateTime startDate = LocalDateTime.of(2026, 6, 16, 20, 30);
+        LocalDateTime endDate = LocalDateTime.of(2026, 6, 16, 21, 45);
         appointment.setStartDate(startDate);
         appointment.setEndDate(endDate);
         appointment.getDoctor().setId(1L);

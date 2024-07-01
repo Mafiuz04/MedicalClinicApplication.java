@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -28,5 +30,10 @@ public class UserService {
     public UserDto createUser(MedicalUser user) {
         userRepository.save(user);
         return userMapper.toDto(user);
+    }
+
+    public List<UserDto> getUsers(){
+        List<MedicalUser> all = userRepository.findAll();
+       return userMapper.listToDto(all);
     }
 }

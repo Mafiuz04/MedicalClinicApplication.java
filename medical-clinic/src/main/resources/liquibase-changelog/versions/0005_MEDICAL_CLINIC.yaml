@@ -13,16 +13,16 @@ databaseChangeLog:
                   constraints:
                     nullable: false
                     primaryKey: true
-                    primaryKeyName: user_id
+                    primaryKeyName: pk_user_id
               - column:
                   name: firstName
-                  type: char
+                  type: varchar(15)
               - column:
                   name: lastName
-                  type: char
+                  type: varchar(20)
               - column:
                   name: email
-                  type: char
+                  type: varchar(30)
               - column:
                   name: password
-                  type: char
+                  type: varchar(30)
