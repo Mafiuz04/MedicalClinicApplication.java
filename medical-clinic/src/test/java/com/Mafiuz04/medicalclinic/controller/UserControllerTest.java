@@ -59,7 +59,7 @@ public class UserControllerTest {
         UserDto dto = userMapper.toDto(user);
         when(userService.changeUserPassword(id,changePassword)).thenReturn(dto);
 
-        mockMvc.perform(MockMvcRequestBuilders.patch("/users/1/password")
+        mockMvc.perform(MockMvcRequestBuilders.patch("/users/1")
                         .content(objectMapper.writeValueAsString(changePassword.getPassword()))
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andDo(print())

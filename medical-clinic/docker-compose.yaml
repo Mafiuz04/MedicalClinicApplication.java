@@ -8,11 +8,38 @@ services:
       - "8080:8080"
     depends_on:
       - db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/postgres
+    networks:
+      - medical-clinic
   db:
     image: postgres:latest
     ports:
       - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
     environment:
-      POSTGRES_DB: mydb
+      POSTGRES_DB: postgres
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: admin
+    networks:
+      - medical-clinic
+  pgaadmin:
+    image: dpage/pgadmin4:latest
+    environment:
+      PGADMIN_DEFAULT_EMAIL: dmin@pgadmin.com
+      PGADMIN_DEFAULT_PASSWORD: password
+      PGADMIN_DEFAULT_PORT: 80
+    ports:
+      - "80:80"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    depends_on:
+      - db
+    networks:
+      - medical-clinic
+volumes:
+  db-data:
+networks:
+  medical-clinic:
+    driver: bridge

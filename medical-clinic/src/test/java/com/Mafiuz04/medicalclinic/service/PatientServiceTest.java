@@ -45,8 +45,8 @@ public class PatientServiceTest {
     void getPatients_PatientsExists_PatientsReturned() {
         //given
         List<Patient> patients = new ArrayList<>();
-        patients.add(createPatient(1L, "321"));
-        patients.add(createPatient(2L, "123"));
+        patients.add(createPatient(1L, "321","234234"));
+        patients.add(createPatient(2L, "123","234234"));
         Pageable pageable = PageRequest.of(0, 10);
         Page<Patient> patientPage = new PageImpl<>(patients);
         when(patientRepository.findAll(pageable)).thenReturn(patientPage);
@@ -59,7 +59,7 @@ public class PatientServiceTest {
     @Test
     void getPatientById_PatientExist_PatientReturned() {
         //given
-        Patient patient = createPatient(1L, "123");
+        Patient patient = createPatient(1L, "123","234234");
         when(patientRepository.findById(patient.getId())).thenReturn(Optional.of(patient));
         //when
         PatientDto patient1 = patientService.getPatientById(patient.getId());
@@ -75,7 +75,7 @@ public class PatientServiceTest {
         //when
         MedicalClinicException exception = Assertions.assertThrows(MedicalClinicException.class, () -> patientService.getPatientById(id));
         //then
-        Assertions.assertEquals("There is no patient with given email.", exception.getMessage());
+        Assertions.assertEquals("There is no patient with given id.", exception.getMessage());
     }
 
     @Test
@@ -120,9 +120,11 @@ public class PatientServiceTest {
     @Test
     void updatePatient_PatientExist_PatientDtoReturned() {
         //given
-        Patient patient = createPatient(1L, "1234");
-        PatientCreateDto updatedPatient = patientMapper.patientToCreate(createPatient(1L, "1234"));
-        when(patientRepository.findById(patient.getId())).thenReturn(Optional.of(patient));
+        Patient patient = createPatient(1L, "1234","123453");
+        PatientCreateDto updatedPatient = patientMapper.patientToCreate(createPatient(1L, "1234","1232"));
+        PatientDto dto = patientMapper.toDto(patient);
+        when(patientRepository.findById(any())).thenReturn(Optional.of(patient));
+        when(patientRepository.save(any())).thenReturn(patient);
         //when
         PatientDto patientDto = patientService.updatePatient(patient.getId(), updatedPatient);
         //then
@@ -195,9 +197,9 @@ public class PatientServiceTest {
         );
     }
 
-    Patient createPatient(Long id, String idCardNumber) {
+    Patient createPatient(Long id, String idCardNumber,String phoneNumber) {
         MedicalUser user = new MedicalUser(1L, "Adam", "Marczyk", "asd@", "password");
-        return new Patient(id, idCardNumber, "sad223", LocalDate.of(2000, 12, 2), new ArrayList<>(), user);
+        return new Patient(id, idCardNumber, phoneNumber, LocalDate.of(2000, 12, 2), new ArrayList<>(), user);
     }
 }
 

@@ -2,9 +2,7 @@ package com.Mafiuz04.medicalclinic.service;
 
 import com.Mafiuz04.medicalclinic.exception.MedicalClinicException;
 import com.Mafiuz04.medicalclinic.mapper.PatientMapper;
-import com.Mafiuz04.medicalclinic.model.Patient;
-import com.Mafiuz04.medicalclinic.model.PatientCreateDto;
-import com.Mafiuz04.medicalclinic.model.PatientDto;
+import com.Mafiuz04.medicalclinic.model.*;
 import com.Mafiuz04.medicalclinic.repository.JPAPatientRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -30,7 +28,7 @@ public class PatientService {
     //TC2: W przypadku gdy pacjent o danym ID nie istnieje, zostanie rzucony wyjątek.
     public PatientDto getPatientById(Long id) {
         return patientMapper.toDto(patientRepository.findById(id)
-                .orElseThrow(() -> new MedicalClinicException("There is no patient with given email.", HttpStatus.BAD_REQUEST)));
+                .orElseThrow(() -> new MedicalClinicException("There is no patient with given id.", HttpStatus.BAD_REQUEST)));
     }
 
     public PatientDto addPatient(PatientCreateDto patientCreateDto) {
@@ -57,11 +55,9 @@ public class PatientService {
         isItExistingPatient(patient, updatedPatient);
         checkData(updatedPatient);
         idCardNumberVerification(patient, updatedPatient);
-        patientRepository.deleteById(id);
         update(patient, updatedPatient);
-        Patient save = patientRepository.save(patient);
-        PatientDto dto = patientMapper.toDto(save);
-        return dto;
+        Patient newPatient = patientRepository.save(patient);
+        return patientMapper.toDto(newPatient);
     }
 
     public void checkData(PatientCreateDto patient) {
@@ -94,7 +90,6 @@ public class PatientService {
 
     private void update(Patient patient, PatientCreateDto updatedPatient) {
         patient.setBirthday(updatedPatient.getBirthday());
-
         patient.getMedicalUser().setPassword(updatedPatient.getMedicalUser().getPassword());
         patient.getMedicalUser().setFirstName(updatedPatient.getMedicalUser().getFirstName());
         patient.getMedicalUser().setLastName(updatedPatient.getMedicalUser().getLastName());

@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -22,6 +23,33 @@ public class AppointmentService {
     private final JPAAppointmentRepository appointmentRepository;
     private final AppointmentMapper appointmentMapper;
     private final JPAPatientRepository patientRepository;
+
+    public List<AppointmentDto> getAvailableAppointmentsBySpecialization(String specialization, LocalDate date){
+        List<Appointment> availableAppointmentsBySpecialization = appointmentRepository.getAvailableAppointmentsBySpecialization(specialization, date);
+        if(availableAppointmentsBySpecialization.isEmpty()){
+            throw new MedicalClinicException("There is no appointments", HttpStatus.BAD_REQUEST);
+        }
+        return appointmentMapper.mapListToDto(availableAppointmentsBySpecialization);
+    }
+    public List<AppointmentDto> getDoctorAvailableAppointments(Long doctorId){
+        if(!doctorRepository.existsById(doctorId)){
+            throw  new MedicalClinicException("There is no Doctor with given Id", HttpStatus.BAD_REQUEST);
+        }
+        if(appointmentRepository.getAvailableAppointmentsByDoctorId(doctorId).isEmpty()){
+            throw new MedicalClinicException("There is no available appointments", HttpStatus.BAD_REQUEST);
+        }
+        return appointmentMapper.mapListToDto(appointmentRepository.getAvailableAppointmentsByDoctorId(doctorId));
+    }
+
+    public List<AppointmentDto> getPatientAppointments(Long patientId){
+        if(!patientRepository.existsById(patientId)){
+            throw  new MedicalClinicException("There is no patient with given Id", HttpStatus.BAD_REQUEST);
+        }
+        if(appointmentRepository.getAppointmentsById(patientId).isEmpty()){
+            throw new MedicalClinicException("There is no assign appointments", HttpStatus.BAD_REQUEST);
+        }
+        return appointmentMapper.mapListToDto(appointmentRepository.getAppointmentsById(patientId));
+    }
 
     //TC1: W przypadku gdy data wizyty jest w przyszłośći oraz godzina jest kwadransem,zostaje zwrócona pusta lista wizyt. Następnie
 // zostanie pobrany doktor o podanym id oraz przypisany do wizyty która zostanie zapisana w appointmentRepository, a następnie przemapowana i zwrócona jako dto.
