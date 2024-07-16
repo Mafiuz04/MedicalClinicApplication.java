@@ -15,7 +15,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -73,7 +75,7 @@ public class AppointmentServiceTest {
     @Test
     void createAppointment_TimeIsNotAFullQuarter_ThrowException() {
         //given
-        AppointmentDto appointmentDto = new AppointmentDto(1L, 1L, 1L, LocalDateTime.of(2024, 6, 16, 20, 20), LocalDateTime.of(2024, 6, 16, 21, 10));
+        AppointmentDto appointmentDto = new AppointmentDto(1L, 1L, 1L, LocalDateTime.of(2026, 6, 16, 20, 20), LocalDateTime.of(2026, 6, 16, 21, 10));
         //when
         MedicalClinicException exception = Assertions.assertThrows(MedicalClinicException.class, () -> appointmentService.createAppointment(appointmentDto));
         //then
@@ -83,7 +85,7 @@ public class AppointmentServiceTest {
     @Test
     void createAppointment_EndDateIsIsEarlierThanStartDate_ThrowException() {
         //given
-        AppointmentDto appointmentDto = new AppointmentDto(1L, 1L, 1L, LocalDateTime.of(2024, 6, 16, 20, 20), LocalDateTime.of(2024, 6, 16, 19, 10));
+        AppointmentDto appointmentDto = new AppointmentDto(1L, 1L, 1L, LocalDateTime.of(2026, 6, 16, 20, 20), LocalDateTime.of(2026, 6, 16, 19, 10));
         //when
         MedicalClinicException exception = Assertions.assertThrows(MedicalClinicException.class, () -> appointmentService.createAppointment(appointmentDto));
         //then
@@ -93,11 +95,11 @@ public class AppointmentServiceTest {
     @Test
     void createAppointment_OverLapping_ThrowException() {
         //given
-        AppointmentDto appointmentDto = new AppointmentDto(1L, 1L, 1L, LocalDateTime.of(2024, 6, 16, 20, 15), LocalDateTime.of(2024, 6, 16, 21, 30));
+        AppointmentDto appointmentDto = new AppointmentDto(1L, 1L, 1L, LocalDateTime.of(2026, 6, 16, 20, 15), LocalDateTime.of(2026, 6, 16, 21, 30));
         Appointment appointment = new Appointment();
         appointment.setDoctor(new Doctor());
-        LocalDateTime startDate = LocalDateTime.of(2024, 6, 16, 20, 15);
-        LocalDateTime endDate = LocalDateTime.of(2024, 6, 16, 21, 30);
+        LocalDateTime startDate = LocalDateTime.of(2026, 6, 16, 20, 15);
+        LocalDateTime endDate = LocalDateTime.of(2026, 6, 16, 21, 30);
         appointment.setStartDate(startDate);
         appointment.setEndDate(endDate);
         appointment.getDoctor().setId(1L);
@@ -113,11 +115,11 @@ public class AppointmentServiceTest {
     @Test
     void createAppointment_DoctorDoesNotExist_ThrowException() {
         //given
-        AppointmentDto appointmentDto = new AppointmentDto(1L, 1L, 1L, LocalDateTime.of(2024, 6, 16, 20, 15), LocalDateTime.of(2024, 6, 16, 20, 30));
+        AppointmentDto appointmentDto = new AppointmentDto(1L, 1L, 1L, LocalDateTime.of(2026, 6, 16, 20, 15), LocalDateTime.of(2026, 6, 16, 20, 30));
         Appointment appointment = new Appointment();
         appointment.setDoctor(new Doctor());
-        LocalDateTime startDate = LocalDateTime.of(2024, 6, 16, 20, 30);
-        LocalDateTime endDate = LocalDateTime.of(2024, 6, 16, 21, 45);
+        LocalDateTime startDate = LocalDateTime.of(2026, 6, 16, 20, 30);
+        LocalDateTime endDate = LocalDateTime.of(2026, 6, 16, 21, 45);
         appointment.setStartDate(startDate);
         appointment.setEndDate(endDate);
         appointment.getDoctor().setId(1L);
@@ -207,5 +209,108 @@ public class AppointmentServiceTest {
         Assertions.assertEquals(1, appointments.size());
         Assertions.assertNotNull(appointments);
         Assertions.assertEquals(appointments.getFirst(), appointmentMapper.toDto(appointment));
+    }
+
+    @Test
+    void getDoctorAvailableAppointments_NoDoctor_ThrowException() {
+        Long doctorId = 1L;
+        when(doctorRepository.existsById(doctorId)).thenReturn(false);
+        MedicalClinicException exception = Assertions.assertThrows(MedicalClinicException.class,
+                () -> appointmentService.getDoctorAvailableAppointments(doctorId));
+        Assertions.assertEquals("There is no Doctor with given Id", exception.getMessage());
+    }
+
+    @Test
+    void getDoctorAvailableAppointments_NoAppointments_ThrowException() {
+        Long doctorId = 1L;
+        ArrayList<Appointment> appointments = new ArrayList<>();
+        when(doctorRepository.existsById(doctorId)).thenReturn(true);
+        when(appointmentRepository.getAvailableAppointmentsByDoctorId(doctorId)).thenReturn(appointments);
+        MedicalClinicException exception = Assertions.assertThrows(MedicalClinicException.class,
+                () -> appointmentService.getDoctorAvailableAppointments(doctorId));
+        Assertions.assertEquals("There is no available appointments", exception.getMessage());
+    }
+
+    @Test
+    void getDoctorAvailableAppointments_AppointmentsExist_ListReturned() {
+        Long doctorId = 1L;
+        ArrayList<Appointment> appointments = new ArrayList<>();
+        appointments.add(new Appointment());
+        appointments.add(new Appointment());
+        appointments.add(new Appointment());
+        when(doctorRepository.existsById(doctorId)).thenReturn(true);
+        when(appointmentRepository.getAvailableAppointmentsByDoctorId(doctorId)).thenReturn(appointments);
+
+        List<AppointmentDto> doctorAvailableAppointments = appointmentService.getDoctorAvailableAppointments(doctorId);
+
+        Assertions.assertEquals(3, doctorAvailableAppointments.size());
+        Assertions.assertNotNull(doctorAvailableAppointments);
+        Assertions.assertFalse(doctorAvailableAppointments.isEmpty());
+    }
+
+    @Test
+    void getPatientAppointments_NoPatient_ThrowException() {
+        Long patientId = 1L;
+        when(patientRepository.existsById(patientId)).thenReturn(false);
+        MedicalClinicException exception = Assertions.assertThrows(MedicalClinicException.class,
+                () -> appointmentService.getPatientAppointments(patientId));
+        Assertions.assertEquals("There is no patient with given Id", exception.getMessage());
+    }
+
+    @Test
+    void getPatientAppointments_NoAppointments_ThrowException() {
+        Long patientId = 1L;
+        ArrayList<Appointment> appointments = new ArrayList<>();
+        when(patientRepository.existsById(patientId)).thenReturn(true);
+        when(appointmentRepository.getAppointmentsById(patientId)).thenReturn(appointments);
+        MedicalClinicException exception = Assertions.assertThrows(MedicalClinicException.class,
+                () -> appointmentService.getPatientAppointments(patientId));
+        Assertions.assertEquals("There is no assign appointments", exception.getMessage());
+    }
+
+    @Test
+    void getPatientAppointments_AppointmentsExist_ListReturned() {
+        Long patientId = 1L;
+        ArrayList<Appointment> appointments = new ArrayList<>();
+        appointments.add(new Appointment());
+        appointments.add(new Appointment());
+        appointments.add(new Appointment());
+        when(patientRepository.existsById(patientId)).thenReturn(true);
+        when(appointmentRepository.getAppointmentsById(patientId)).thenReturn(appointments);
+
+        List<AppointmentDto> patientAppointments = appointmentService.getPatientAppointments(patientId);
+
+        Assertions.assertEquals(3, patientAppointments.size());
+        Assertions.assertNotNull(patientAppointments);
+        Assertions.assertFalse(patientAppointments.isEmpty());
+    }
+
+    @Test
+    void getAvailableAppointmentsBySpecialization_ExistingAppointments_ReturnAvailableAppointments() {
+        String specialization = "Cardiology";
+        LocalDate date = LocalDate.now();
+        List<Appointment> appointments = List.of(new Appointment());
+        List<AppointmentDto> appointmentDtos = appointmentMapper.mapListToDto(appointments);
+        when(appointmentRepository.getAvailableAppointmentsBySpecialization(specialization, date)).thenReturn(appointments);
+
+        List<AppointmentDto> result = appointmentService.getAvailableAppointmentsBySpecialization(specialization, date);
+
+        Assertions.assertNotNull(result);
+        Assertions.assertEquals(appointmentDtos, result);
+    }
+
+    @Test
+    void getAvailableAppointmentsBySpecialization_NoAvailableAppointments() {
+        String specialization = "Dermatology";
+        LocalDate date = LocalDate.now();
+        when(appointmentRepository.getAvailableAppointmentsBySpecialization(specialization, date)).
+                thenReturn(List.of());
+
+        MedicalClinicException exception = Assertions.assertThrows(MedicalClinicException.class, () ->
+                appointmentService.getAvailableAppointmentsBySpecialization(specialization, date)
+        );
+
+        Assertions.assertEquals("There is no appointments", exception.getMessage());
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
     }
 }

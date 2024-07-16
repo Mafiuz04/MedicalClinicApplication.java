@@ -9,11 +9,15 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface AppointmentMapper {
+
     @Mapping(source = "doctor.id", target = "doctorId")
     @Mapping(source = "patient.id", target = "patientId")
     AppointmentDto toDto(Appointment appointment);
 
+//    @Mapping(source = "doctorId", target = "doctor.id")
+//    @Mapping(source = "patientId", target = "patient.id")
     Appointment toEntity(AppointmentDto appointmentDto);
+
     @Mapping(source = "doctor.id", target = "doctorId")
     @Mapping(source = "patient.id", target = "patientId")
     List<AppointmentDto> mapListToDto(List<Appointment> appointments);
